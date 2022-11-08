@@ -1,0 +1,165 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Sip-Mutual Funds{% endblock title %}
+
+{% block body %}
+
+<div class="container p-4">
+    
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingOne">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#add_sip" aria-expanded="false" aria-controls="add_sip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-boxes me-2" viewBox="0 0 16 16">
+              <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
+            </svg> SIP form - Click here
+          </button>
+        </h2>
+        <div id="add_sip" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body bg-dark text-light">
+            <div class="row">
+
+              <h1 class="display-6 text-center">ADD SIP</h1>
+              <div class="col">
+                
+                <form method='POST'>
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="id_sip_platform_name" class="form-label">Sip platform name:</label>
+                    {{form_sip.sip_platform_name}}
+                  </div>
+                  <div class="mb-3">  
+                    <label for="id_sip_product_name" class="form-label">Sip product name:</label>
+                    {{form_sip.sip_product_name}}
+                  </div>
+                  <div class="mb-3">
+                    <label for="id_amount" class="form-label">Amount:</label>
+                    <input type="number" class="form-control" name="amount" required="" id="id_amount">                  
+                  </div>
+                  <div class="mb-3">  
+                    <label for="id_sip_product_name" class="form-label">Date:</label>
+                    {{form_sip.sip_date}}
+                  </div>
+                  <div class="mb-3">
+                    <label for="id_comment" class="form-label">Comment:</label>
+                    <textarea name="comment" class="form-control" cols="20" rows="5" id="id_comment"></textarea>                                                              
+                  </div>
+                  <center><button type="submit" name="save_sip" class="btn btn-sm btn-warning m-2">Save</button></center>                              
+                </form> 
+
+              </div>
+
+              <div class="col">
+                <form method='POST'>
+                  {% csrf_token %}
+                  <div id="emailHelp" class="form-text">*Fill the below forms if they are not available to select in ADD SIP</div>
+                  <div class="mb-3">
+                    <label for="id_sip_platformname" class="form-label">*Platform name</label>
+                    <input type="text" class="form-control" name="sip_platformname" maxlength="250" required="" id="id_sip_platformname" placeholder="Eg., Grow, Upstox, Zerodha,...">
+                    <center><button type="submit" name="save_platform" class="btn btn-sm btn-warning m-2">Save</button></center>
+                  </div>
+                </form>
+                <form method='POST'>
+                  {% csrf_token %}                
+                  <div class="mb-3">
+                    <label for="id_sip_productname" class="form-label">*Product name</label>
+                    <input type="text" class="form-control" name="sip_productname" maxlength="250" required="" id="id_sip_productname" placeholder="Eg., ICICI, TATA...">
+                    <center><button type="submit" name="save_product" class="btn btn-sm btn-warning m-2">Save</button></center>
+                  </div>  
+                </form>  
+                {% if msg|length != 0 %}
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{msg}}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                {% endif %}
+              </div> 
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingTwo">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+            All SIP Transactions
+          </button>
+        </h2>
+        <div id="flush-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body bg-dark text-light">
+            <table class="table text-light">
+              <thead>
+                <tr class="text-center">
+                  <th scope="col">Platform</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Comment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in obj_sip %}
+                <tr class="text-center">
+                  <th scope="row">{{item.sip_platform_name}}</th>
+                  <td>{{item.sip_product_name}}</td>
+                  <td>Rs. {{item.amount}}/-</td>
+                  <td>{{item.sip_date}}</td>
+                  {% if item.comment|length == 0 %}<td class="text-center"> - </td>{% else %}<td>{{item.comment}}</td>{% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingThree">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+            Products & Platform
+          </button>
+        </h2>
+        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body bg-dark text-light"> 
+            <div class="row">
+              <div class="col">
+                <table class="table text-light">
+                  <thead>
+                    <tr class="text-center">
+                      <th scope="col">Products</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in obj_product %}
+                    <tr class="text-center">
+                      <th scope="row">{{item.sip_productname}}</th>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>                  
+              </div>
+              <div class="col">
+                <table class="table text-light">
+                  <thead>
+                    <tr class="text-center">
+                      <th scope="col">Platforms</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in obj_platform %}
+                    <tr class="text-center">
+                      <th scope="row">{{item.sip_platformname}}</th>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>                  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+    
+</div>
+{% endblock body %}
