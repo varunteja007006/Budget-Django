@@ -415,5 +415,5 @@ def get_graph_pie(overall_exp, types, graph_title):
 
     return data
 
-def calc(request):
-    return render(request, 'calc.html')
+#def calc(request):
+#    return render(request, 'calc.html')
