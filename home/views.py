@@ -224,18 +224,7 @@ def all_transactions(request):
         a.append(tot_monthly_exp[i])
         category_wise_monthly_exp.append(a)  
         a = []    
-    #this month expenses
-    #x=[]
-    #y=[]
-    #for obj in obj_expenses.order_by('-date').reverse():
-    #    datedb = obj.date
-    #    x.append(datedb.strftime("%d"))
-    #    y.append(obj.cost)
-    #graph_total_expenditure = get_graph_plot(x,y,'Date','Cost','Expenditure graph - This month','red')
-    #x.clear()
-    #y.clear()
 
-    #End of month graph
     x=[]
     y=[]
     for obj in obj_eom:
@@ -353,10 +342,6 @@ def get_graph_bar(x, y, xlabel, ylabel, graph_title, colour):
     plt.ylabel(ylabel)
     plt.title(graph_title)
     plt.tight_layout()
-
-    #plt.grid(color='#95a5a6', linestyle='--', linewidth=1, axis='y', alpha=0.7)
-    #plt.style.use('fivethirtyeight')
-
     imgdata = StringIO()
     fig.savefig(imgdata, format='svg')
     imgdata.seek(0)
@@ -372,10 +357,6 @@ def get_graph_barh(y_pos, exp, types, xlabel, graph_title, colour):
     plt.xlabel(xlabel)
     plt.title(graph_title)
     plt.tight_layout()
-
-    #plt.grid(color='#95a5a6', linestyle='--', linewidth=1, axis='y', alpha=0.7)
-    #plt.style.use('fivethirtyeight')
-
     imgdata = StringIO()
     fig.savefig(imgdata, format='svg')
     imgdata.seek(0)
@@ -383,21 +364,16 @@ def get_graph_barh(y_pos, exp, types, xlabel, graph_title, colour):
     return data
 
 def get_graph_plot(x, y, xlabel, ylabel, graph_title, colour):
-    #plt.xkcd()
     fig = plt.figure()
-
     plt.plot(x, y, color=colour, label = graph_title, marker='o',linestyle='--',linewidth=0.7)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(graph_title)
-    #plt.style.use('fivethirtyeight')
     plt.tight_layout()
-
     imgdata = StringIO()
     fig.savefig(imgdata, format='svg')
     imgdata.seek(0)
     data = imgdata.getvalue()
-
     return data   
 
 def get_graph_pie(overall_exp, types, graph_title):
@@ -407,12 +383,10 @@ def get_graph_pie(overall_exp, types, graph_title):
     plt.pie(overall_exp, labels=types, explode=explode, colors=colours, wedgeprops={'edgecolor':'black',}, shadow= True, autopct="%1.1f%%", rotatelabels=True)
     plt.title(graph_title)
     plt.tight_layout()
-
     imgdata = StringIO()
     fig.savefig(imgdata, format='svg')
     imgdata.seek(0)
     data = imgdata.getvalue()
-
     return data
 
 #def calc(request):

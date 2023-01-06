@@ -39,9 +39,7 @@
     </div>
   </nav>
   {% block body %}
-<!--<div class="container px-2 py-2 mt-2">-->
 <div class="container">
-
   <div class="accordion accordion-flush mt-2" id="accordionFlushExample">
     <div class="accordion-item">
       <h2 class="accordion-header" id="flush-headingOne">
@@ -54,7 +52,6 @@
       </h2>
       <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
         <div class="accordion-body">
-
           <div class="row w-auto align-items-start rounded">
             <div class="col mt-3">
               <form method='POST'>
@@ -88,13 +85,10 @@
               {% endfor %}
             </div>        
           </div>  
-
         </div>
       </div>
     </div>
   </div>
-
-  <!--<div class="row gx-5 gy-5 bg-dark w-auto align-items-start">-->
   <div class="row bg-dark mt-2 rounded">
     <div class="col">
       <h4 class="text-light text-center my-5 font-monospace text-decoration-underline">This month Expenses...</h4>    
@@ -122,7 +116,6 @@
         </div>
       </form> 
     </div>
-
     <div class="col">
       <h3 class="text-light text-center m-5 font-monospace text-decoration-underline">Expenses</h3>     
       {% for obj in page_obj %}
@@ -132,7 +125,6 @@
         <p class="px-2 mt-1">Comments >>{{obj.comment}}</p>        
       </div>
       {% endfor %}
-      
       <nav aria-label="Page navigation" class="position-relative">
         <ul class="pagination position-absolute top-0 start-50 translate-middle-x border-light">
         {% if page_obj.has_previous %}
@@ -161,12 +153,8 @@
         </ul>
       </nav>
     </div>
-
   </div>  
-  
 </div>
-
-
   {% endblock body %}
   <!--alert icons-->
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
