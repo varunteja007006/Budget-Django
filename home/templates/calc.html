@@ -1,14 +1,40 @@
-{% extends 'dashboard.html' %}
-
-{% block title %}Calculator{% endblock title %}
-
+{% extends 'dashboard.html' %} {% block title %}Calculator{% endblock title %}
 {% block body %}
 
 <div class="container py-5">
-
-  
-  <p class="fs-2 m-3" id="demo"></p>
-
+  <div class="card" style="width: 30rem">
+    <div class="card-body">
+      <h5 class="card-title">Calculator</h5>
+      <form class="row g-3 needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="col-md-6">
+          <label for="validationCustom01" class="form-label">Input one</label>
+          <input type="number" class="form-control" id="validationCustom01" value="" name="input_one" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+        <div class="col-md-6">
+          <label for="validationCustom01" class="form-label">Input two</label>
+          <input type="number" class="form-control" id="validationCustom01" value="" name="input_two" required />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit" name="operation" value="add">Add</button>
+          <button class="btn btn-primary" type="submit" name="operation" value="subtract">Subtract</button>
+        </div>
+      </form>
+    </div>
+    {% if answer %}
+    <div class="card bg-success ms-3 mb-3 text-white" style="width: 18rem">
+      <div class="card-body">
+        <h6 class="card-subtitle ms-0 m-1">
+          {{submit_type}} = {{answer}}
+        </h6>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <p class="text-white mt-3">More operations under development.</p>
+  <p class="text-white">Thank you for your patience.</p>
 </div>
 
 <script>
@@ -18,5 +44,5 @@
   function myFunction(a, b) {
     return a * b;
   }
-  </script>
+</script>
 {% endblock body %}

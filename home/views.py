@@ -389,5 +389,20 @@ def get_graph_pie(overall_exp, types, graph_title):
     data = imgdata.getvalue()
     return data
 
-#def calc(request):
-#    return render(request, 'calc.html')
+def calc(request):
+    input_one = request.GET.get("input_one") 
+    input_two = request.GET.get("input_two")
+    answer,submit_type = '',''
+    if input_two is None and input_one is None:
+        pass
+    elif request.GET.get("operation") == 'add':
+        answer = int(input_one) + int(input_two)
+        submit_type = 'Addition'
+    elif request.GET.get("operation") == 'subtract':
+        answer = int(input_one) - int(input_two)
+        submit_type = 'Subtract'
+    else:
+        answer,submit_type = '',''
+    return render(request, 'calc.html', context={'answer': answer, 'submit_type': submit_type})
+
+    #return render(request, 'calc.html')
