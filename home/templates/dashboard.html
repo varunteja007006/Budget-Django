@@ -40,8 +40,8 @@
   </nav>
   {% block body %}
   <div class="container">
-    <div class="accordion accordion-flush mt-2" id="accordionFlushExample">
-      <div class="accordion-item rounded-5">
+    <div class="accordion accordion-flush mt-2 " id="accordionFlushExample">
+      <div class="accordion-item bg-dark rounded-5">
         <h2 class="accordion-header rounded-5" id="flush-headingOne">
           <button class="accordion-button collapsed rounded-5" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
             <span class="material-icons orange600 md-36 m-2">
@@ -50,9 +50,9 @@
             Income Form - Click here to fill your income
           </button>
         </h2>
-        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-          <div class="accordion-body bg-secondary text-white">
-            <div class="row w-auto align-items-start rounded">
+        <div id="flush-collapseOne" class="accordion-collapse collapse mt-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body bg-dark text-white">
+            <div class="row w-auto align-items-start border border-1 border-secondary rounded-3 ">
               <div class="col mt-3">
                 <form method='POST'>
                   {% csrf_token %}
@@ -90,7 +90,7 @@
         </div>
       </div>
     </div>
-    <div class="row border border-1 border-secondary rounded-3 bg-dark mt-2">
+    <div class="row border border-1 border-secondary rounded-3 bg-dark mt-2 mx-2">
       <div class="col">
         <h4 class="text-light text-center my-5 font-monospace text-decoration-underline">This month Expenses...</h4>
         <form method='POST' class="ms-2">
