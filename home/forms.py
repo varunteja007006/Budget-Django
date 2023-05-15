@@ -4,11 +4,11 @@ from django import forms
 from django.forms import ModelForm, widgets
 
 from django.forms.models import ModelChoiceField
-from .models import income, expenses, end_of_month_model, sip_platform_model, sip_product_model, sip
+from .models import Income, expenses, end_of_month_model, sip_platform_model, sip_product_model, sip
 
-class income(ModelForm):
+class Income(ModelForm):
     class Meta:
-        model = income
+        model = Income
         fields = ['name','amount','comment']
 
     def __init__(self, *args, **kwargs):

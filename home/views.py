@@ -9,7 +9,7 @@ import numpy as np
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, reverse
 from django.contrib import messages
-from .forms import end_of_month_form, income, expenses, sip_form, sip_product_form, sip_platform_form
+from .forms import end_of_month_form, Income, expenses, sip_form, sip_product_form, sip_platform_form
 from . import models
 from datetime import date, time
 from django.core.paginator import Paginator
@@ -18,10 +18,10 @@ today = date.today()
 month = today.strftime("%m")  
 
 def dashboard(request): 
-    form_income = income()
+    form_income = Income()
     form_expenses = expenses()
 
-    obj_income = models.income.objects.all().filter(date__month=month).order_by('-date')
+    obj_income = models.Income.objects.all().filter(date__month=month).order_by('-date')
     obj_expenses =  models.expenses.objects.all().filter(date__month=month).order_by('-time')
     
     paginator = Paginator(obj_expenses,3)
@@ -32,11 +32,11 @@ def dashboard(request):
                  'obj_income':obj_income, 'page_obj': page_obj}
 
     if request.method == "POST":
-        form_income = income(request.POST)
+        form_income = Income(request.POST)
         form_expenses = expenses(request.POST)
         if form_income.is_valid():
             form_income.save()
-            form_income = income()            
+            form_income = Income()            
             context={'form_income': form_income, 'form_expenses': form_expenses, 
                         'success_income':"successfully added income",  
                         'obj_income':obj_income, 'page_obj': page_obj}
@@ -52,7 +52,7 @@ def dashboard(request):
     return render(request, 'dashboard.html',context)
 
 def all_transactions(request):
-    obj_income = models.income.objects.all().filter(date__month=month).order_by('-date') #income 
+    obj_income = models.Income.objects.all().filter(date__month=month).order_by('-date') #income 
     obj_expenses =  models.expenses.objects.all().filter(date__month=month).order_by('-time') #expenses
     obj_overall_expenses =  models.expenses.objects.all().order_by('-time')
     obj_eom = models.end_of_month_model.objects.all()  #End of month
@@ -404,5 +404,3 @@ def calc(request):
     else:
         answer,submit_type = '',''
     return render(request, 'calc.html', context={'answer': answer, 'submit_type': submit_type})
-
-    #return render(request, 'calc.html')

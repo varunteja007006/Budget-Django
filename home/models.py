@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import date
 
 # Create your models here.
-class income(models.Model):
+class Income(models.Model):
     name = models.CharField(max_length=150)
     amount = models.IntegerField()
     date = models.DateField(default=date.today)

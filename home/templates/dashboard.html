@@ -23,16 +23,16 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/">Dashboard</a>
+            <a class="btn btn-warning text-dark fw-semibold nav-link mx-2" href="{% url 'home:dashboard' %}">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="all_transactions">All Transactions</a>
+            <a class="btn btn-warning text-dark fw-semibold  nav-link mx-2" href="{% url 'home:all-transactions' %}">All Transactions</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="sip">SIP</a>
+            <a class="btn btn-warning text-dark fw-semibold  nav-link mx-2" href="{% url 'home:sip-page' %}">SIP</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="calc">Calculator</a>
+            <a class="btn btn-warning text-dark fw-semibold  nav-link mx-2" href="{% url 'home:calc-page' %}">Calculator</a>
           </li>
         </ul>
       </div>
@@ -52,7 +52,7 @@
         </h2>
         <div id="flush-collapseOne" class="accordion-collapse collapse mt-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
           <div class="accordion-body bg-dark text-white">
-            <div class="row w-auto align-items-start border border-1 border-secondary rounded-3 ">
+            <div class="row w-auto align-items-start border border-3 border-danger rounded-3 ">
               <div class="col mt-3">
                 <form method='POST'>
                   {% csrf_token %}
@@ -64,9 +64,7 @@
                     <p>{{form_income.amount}}</p>
                     <label for="id_comment" class="form-label font-monospace fw-bolder">Comment</label>
                     <p>{{form_income.comment}}</p>
-                    <center>
-                      <button type="submit" class="btn btn-light bg-warning font-monospace fw-bolder">Save</button>
-                    </center>
+                    <button type="submit" class="btn text-dark bg-warning font-monospace fw-bolder">Save</button>
                     {% if success %}
                     <div class="alert alert-success mt-3" role="alert">
                       {{success_income}}
@@ -77,20 +75,23 @@
               </div>
               <div class="col mb-3 mx-2">
                 <h3 class="text-center mb-2 mt-3 font-monospace text-decoration-underline">Income</h3>
-                {% for obj in obj_income %}
-                <div class="font-monospace border border-light border-1 mb-2 bg-success rounded-1 p-2">
-                  <p class="px-2 mt-2">Budget of {{obj.name}}, amounting Rs.{{obj.amount}}/- as of </p>
-                  <p class="px-2 mt-2">Comments >> {{obj.comment}}</p>
-                  <p class="d-flex flex-row-reverse p-0 m-0"><span class="badge text-bg-light p-2 mx-1 my-0">{{obj.date}}, {{obj.time}}</span></p>
+                <div class="d-flex flex-column mb-3">
+                  {% for obj in obj_income %}
+                  <div class="font-monospace border border-light border-1 mb-2 bg-success rounded-1 p-2">
+                    <p class="p-0 m-0">Credit: {{obj.name}}</p>
+                    <p class="p-0 m-0">Amount Credited: Rs.{{obj.amount}}/-</p>
+                    <p class="p-0 m-0">Comments: {{obj.comment}}</p>
+                    <p class="d-flex flex-row-reverse p-0 m-0"><span class="badge text-bg-light p-2 mx-1 my-0">{{obj.date}}, {{obj.time}}</span></p>
+                  </div>
+                  {% endfor %}
                 </div>
-                {% endfor %}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="row border border-1 border-secondary rounded-3 bg-dark mt-2 mx-2">
+    <div class="row border border-3 border-success rounded-3 bg-dark mt-2 mx-2">
       <div class="col">
         <h4 class="text-light text-center my-5 font-monospace text-decoration-underline">This month Expenses...</h4>
         <form method='POST' class="ms-2">
@@ -106,9 +107,7 @@
             <p>{{form_expenses.cost}}</p>
             <label for="id_comment" class="form-label text-light font-monospace fw-bolder">Comment</label>
             <p>{{form_expenses.comment}}</p>
-            <center>
-              <button type="submit" class="btn btn-light bg-warning font-monospace fw-bolder">Save</button>
-            </center>
+            <button type="submit" class="btn text-dark bg-warning font-monospace fw-bolder">Save</button>
             {% if success_expenses %}
             <div class="alert alert-success mt-3" role="alert">
               {{success_expenses}}
@@ -120,10 +119,11 @@
       <div class="col">
         <h3 class="text-light text-center m-5 font-monospace text-decoration-underline">Expenses</h3>
         {% for obj in page_obj %}
-        <div class="text-light font-monospace border border-danger border-4 mb-2">
-          <p class="px-2 mt-2">Expense: {{obj.name}} || cost : Rs.{{obj.cost}}/-</p>
-          <p class="px-2 mt-1">Time:{{obj.time}}||Date:{{obj.date}}.</p>
-          <p class="px-2 mt-1">Comments >>{{obj.comment}}</p>
+        <div class="text-light font-monospace border border-1 border-light bg-danger mb-2 rounded-1 p-2">
+          <p class="m-0 p-0">Expense: {{obj.name}}</p>
+          <p class="m-0 p-0">Debited Amount: Rs.{{obj.cost}}/-</p>
+          <p class="m-0 p-0">Comments: {{obj.comment}}</p>
+          <p class="d-flex flex-row-reverse p-0 m-0"><span class="badge text-bg-light p-2 mx-1 my-0">{{obj.date}}, {{obj.time}}</span></p>
         </div>
         {% endfor %}
         <nav aria-label="Page navigation" class="position-relative">
