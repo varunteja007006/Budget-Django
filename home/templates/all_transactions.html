@@ -1,6 +1,6 @@
 {% extends 'dashboard.html' %}
 
-{% block title %}All Transactions{% endblock title %}
+
 
 {% block body %}
 
@@ -177,7 +177,7 @@
   </div>
 
 
-  <div class="accordion w-auto mt-5 border-dark" id="accordionPanelsStayOpenExample">
+  <div class="accordion w-auto my-5 border-dark" id="accordionPanelsStayOpenExample">
 
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -186,13 +186,15 @@
             table_view
           </span>
           Table - This month expenses
-          <a href="{% url 'home:download-csv' %}" class"mx-2"><span class="material-icons btn btn-outline-success btn mx-2 shadow">file_download</span></a>
+          <a href="{% url 'home:download-csv' %}" class="btn btn-outline-success mx-3 shadow"> <span class="material-symbols-outlined">
+              download
+            </span></a>
         </button>
       </h2>
       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne" data-bs-parent="#accordionpanelsStayOpenExample">
 
         <div class="accordion-body">
-          <a name="download_csv" id="download_csv" class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm" href="{% url 'home:download-csv' %}" role="button">Download CSV</a>
+          <a name="download_csv" id="download_csv" class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm" href="{% url 'home:download-csv' %}" role="button">Download CSV file</a>
 
           <div class="row px-2 py-2">
             <div class="col">
@@ -269,7 +271,7 @@
           Category wise expenses
         </button>
       </h2>
-      <div id="panelsStayOpen-collapsezero" class="accordion-collapse collapse show border-dark" aria-labelledby="panelsStayOpen-headingzero" data-bs-parent="#accordionpanelsStayOpenExample">
+      <div id="panelsStayOpen-collapsezero" class="accordion-collapse collapse border-dark" aria-labelledby="panelsStayOpen-headingzero" data-bs-parent="#accordionpanelsStayOpenExample">
         <div class="accordion-body border-dark">
           <div class="row">
             <div class="col d-sm-none d-md-block">
@@ -309,13 +311,15 @@
             table_view
           </span>
           Table - overall expenses
-          <a href="{% url 'home:download-csv-all' %}" class="mx-2"><span class="material-icons btn btn-outline-success btn m-2 shadow">file_download</span></a>
+          <a href="{% url 'home:download-csv-all' %}" class="btn btn-outline-success mx-3 shadow"> <span class="material-symbols-outlined">
+              download
+            </span></a>
         </button>
       </h2>
-      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo" data-bs-parent="#accordionpanelsStayOpenExample">
+      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo" data-bs-parent="#accordionpanelsStayOpenExample">
 
         <div class="accordion-body border-dark">
-          <a name="download_csv_all" id="download_csv_all" class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm" href="{% url 'home:download-csv-all' %}" role="button">Download CSV</a>
+          <a name="download_csv_all" id="download_csv_all" class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm" href="{% url 'home:download-csv-all' %}" role="button">Download CSV file</a>
           <div class="row px-2 py-2">
             <div class="col">
               <table class="table table-striped border border-light">
@@ -391,7 +395,7 @@
           End of Month/overall Savings
         </button>
       </h2>
-      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingThree" data-bs-parent="#accordionpanelsStayOpenExample">
+      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree" data-bs-parent="#accordionpanelsStayOpenExample">
         <div class="accordion-body">
           <div class="row">
             <div class="col d-sm-none d-md-block">
@@ -429,7 +433,7 @@
           All expenses graph
         </button>
       </h2>
-      <div id="panelsStayOpen-collapsefour" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingfour" data-bs-parent="#accordionpanelsStayOpenExample">
+      <div id="panelsStayOpen-collapsefour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingfour" data-bs-parent="#accordionpanelsStayOpenExample">
         <div class="accordion-body">
           <div class="row">
             <div class="col">
