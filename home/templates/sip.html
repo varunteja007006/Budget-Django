@@ -186,7 +186,7 @@
               <tbody>
                 {% for item in obj_sip %}
                 <tr class="text-center">
-                  <td scope="row">{{item.sip_platform_name}}</td>
+                  <td>{{item.sip_platform_name}}</td>
                   <td>{{item.sip_product_name}}</td>
                   <td>Rs. {{item.amount}}/-</td>
                   <td>{{item.sip_date}}</td>
@@ -237,11 +237,11 @@
                 <tbody>
                   {% for item in obj_product %}
                   <tr class="text-center">
-                    <td scope="row">{{item.sip_productname}}</td>
+                    <td>{{item.sip_productname}}</td>
                   </tr>
                   {% empty %}
                   <tr class="text-center">
-                    <td scope="row">No data</td>
+                    <td>No data</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -253,16 +253,18 @@
             class="row w-auto align-items-start border border-3 border-danger rounded-3 my-2"
           >
             <div class="col">
-              <table class="table text-light">
+              <table class="table">
                 <thead>
-                  <tr class="text-center">
-                    <td scope="col">Platforms</td>
+                  <tr>
+                    <th scope="col" class="text-center text-light">
+                      Platforms
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for item in obj_platform %}
                   <tr class="text-center">
-                    <td scope="row">{{item.sip_platformname}}</td>
+                    <td>{{item.sip_platformname}}</td>
                   </tr>
                   {% empty %}
                   <tr class="text-center">
