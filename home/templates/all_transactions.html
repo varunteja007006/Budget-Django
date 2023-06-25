@@ -14,10 +14,8 @@
         <!--If there is no salary data-->
         <div class="card-header">Present Month</div>
         {% else %}
-        {% for obj in obj_income %}
         <!--If there is salary data-->
-        <div class="card-header">{{obj.date}}, {{obj.time}}</div>
-        {% endfor %}
+        <div class="card-header">{{obj_income.first.date}}, {{obj_income.first.time}}</div>
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">Salary</h5>
@@ -33,34 +31,32 @@
           </div>
           {% else %}
           <!--If there is salary data-->
-          {% for obj in obj_income %}
-          {% if obj.amount %}
-          <p class="card-text">Rs.{{obj.amount}}/-</p>
+          {% if obj_income.first.amount %}
+          <p class="card-text">Rs.{{salary}}/-</p>
           <div class="alert alert-success d-flex align-items-center" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
               <use xlink:href="#check-circle-fill" />
             </svg>
             <div>
-              Your income is up-to-date!
+              Your income is Updated!
             </div>
           </div>
           {% else %}
           <!--If there is no salary data-->
           <p class="card-text">Rs.0/-</p>
           {% endif %}
-          {% endfor %}
           {% endif %}
         </div>
       </div>
     </div>
+    
+    <!--End of Month data-->
     <div class="col">
       <div class="card">
         {% if obj_income|length == 0 %}
         <div class="card-header">Present Month</div>
         {% else %}
-        {% for obj in obj_income %}
-        <div class="card-header">{{obj.date}}, {{obj.time}}</div>
-        {% endfor %}
+        <div class="card-header">As of now</div>
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">End of Month</h5>
@@ -115,8 +111,6 @@
         </div>
       </div>
     </div>
-    <!--End of Month data-->
-
 
     <!--Overall End of Month Savings data-->
     <div class="col">
@@ -154,8 +148,8 @@
         <div class="card-header">Overall</div>
         <div class="card-body">
           <h5 class="card-title">Total Expenditure</h5>
-          <p class="card-text">Rs.{{total_debit}}/-</p>
-          {% if total_debit > end_of_month %}
+          <p class="card-text">Rs.{{total_expenses}}/-</p>
+          {% if total_expenses > end_of_month %}
           <div class="alert alert-danger d-flex align-items-center" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
               <use xlink:href="#exclamation-triangle-fill" />
@@ -313,88 +307,6 @@
         </div>
       </div>
     </div>
-    {% comment %} overall expenses table and csv download {% endcomment %}
-    {% comment %} <div class="accordion-item border-dark">
-      <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-          <span class="material-icons md-36 m-2">
-            table_view
-          </span>
-          Table - overall expenses
-          <a href="{% url 'home:download-csv-all' %}" class="btn btn-outline-success mx-3 shadow"> <span class="material-symbols-outlined">
-              download
-            </span></a>
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo" data-bs-parent="#accordionpanelsStayOpenExample">
-
-        <div class="accordion-body border-dark">
-          <a name="download_csv_all" id="download_csv_all" class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm" href="{% url 'home:download-csv-all' %}" role="button">Download CSV file</a>
-          <div class="row px-2 py-2">
-            <div class="col">
-              <table class="table table-striped border border-light">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Cost</th>
-                    <th>Date of purchase</th>
-                    <th>Time of purchase</th>
-                    <th>Comments</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for expenses in page_obj_1 %}
-                  <tr>
-                    <td>
-                      {{ expenses.name|capfirst }}
-                    </td>
-                    <td>
-                      {{ expenses.type|capfirst }}
-                    </td>
-                    <td>
-                      {{ expenses.cost|capfirst }}
-                    </td>
-                    <td>
-                      {{ expenses.date }}
-                    </td>
-                    <td>
-                      {{ expenses.time }}
-                    </td>
-                    <td>
-                      {{ expenses.comment|capfirst }}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-              <ul class="pagination justify-content-center">
-                {% if page_obj_1.has_previous %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page=1">First</a></li>
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ page_obj_1.previous_page_number }}">
-                    << </a>
-                </li>
-                {% endif %}
-                {% for num in page_obj_1.paginator.page_range %}
-                {% if page_obj_1.number == num %}
-                <li><a class="btn btn-dark mb-4" href="?page={{ num }}">
-                    {{ num }}</a></li>
-                {% elif num > page_obj_1.number|add:'-3' and num < page_obj_1.number|add:'3' %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ num }}">
-                    {{ num }}</a></li>
-                {% endif %}
-                {% endfor %}
-                {% if page_obj_1.has_next %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ page_obj_1.next_page_number }}"> >> </a></li>
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ page_obj_1.paginator.num_pages }}"> Last </a></li>
-                {% endif %}
-              </ul>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div> {% endcomment %}
 
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingThree">

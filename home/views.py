@@ -52,34 +52,32 @@ def dashboard(request):
 
 
 def all_transactions(request):
+    # get income filtered by current month and sorted by time
     obj_income = models.Income.objects.all().filter(
-        date__month=month).order_by('-date')  # income
+        date__month=month).order_by('-time')  
+    # get expenses filtered by current month and sorted by time
     obj_expenses = models.expenses.objects.all().filter(
-        date__month=month).order_by('-time')  # expenses
+        date__month=month).order_by('-time') 
+    # get all expenses sorted by time
     obj_overall_expenses = models.expenses.objects.all().order_by('-time')
-    obj_eom = models.end_of_month_model.objects.all()  # End of month
+    # get all EOM(End Of Month) records
+    obj_eom = models.end_of_month_model.objects.all() 
 
-    # NEED to use caching
-
-    # Pagination
+    # Pagination for the current month expenses
     paginator = Paginator(obj_expenses, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    paginator = Paginator(obj_overall_expenses, 10)
-    page_number = request.GET.get('page')
-    page_obj_1 = paginator.get_page(page_number)
-
     # salary , total expenses, end of month
     salary = 0
     for obj in obj_income:
-        salary = obj.amount
+        salary += obj.amount
 
-    total_debit, end_of_month = 0, 0
+    total_expenses, end_of_month = 0, 0
     for obj in obj_expenses:
-        debit = obj.cost
-        total_debit = total_debit + debit
-    end_of_month = salary-total_debit
+        total_expenses += obj.cost
+
+    end_of_month = salary-total_expenses
 
     end_of_month_now = 0
     for obj in obj_eom.filter(date__month=month):
@@ -243,9 +241,9 @@ def all_transactions(request):
         'obj_income': obj_income,
         'obj_eom_rev': obj_eom_rev,
         'page_obj': page_obj,
-        'page_obj_1': page_obj_1,
+        'salary': salary,
         'end_of_month': end_of_month,
-        'total_debit': total_debit,
+        'total_expenses': total_expenses,
         'total_eom': total_eom,
         'updated': updated,
         'form_eom_now': form_eom_now,
