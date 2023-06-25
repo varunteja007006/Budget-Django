@@ -11,40 +11,40 @@
     <div class="col">
       <div class="card border-0">
         {% if obj_income|length == 0 %}
-        <!--If there is no salary data-->
-        <div class="card-header">Present Month</div>
+          <!--If there is no salary data-->
+          <div class="card-header">Present Month</div>
         {% else %}
-        <!--If there is salary data-->
-        <div class="card-header">{{obj_income.first.date}}, {{obj_income.first.time}}</div>
+          <!--If there is salary data-->
+          <div class="card-header">{{obj_income.first.date}}, {{obj_income.first.time}}</div>
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">Salary</h5>
           {% if obj_income|length == 0 %}
-          <!--If there is no salary data-->
-          <div class="alert alert-danger d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
-              <use xlink:href="#exclamation-triangle-fill" />
-            </svg>
-            <div>
-              <p class="card-text">No Data</p>
+            <!--If there is no salary data-->
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                <use xlink:href="#exclamation-triangle-fill" />
+              </svg>
+              <div>
+                <p class="card-text">No Data</p>
+              </div>
             </div>
-          </div>
           {% else %}
-          <!--If there is salary data-->
-          {% if obj_income.first.amount %}
-          <p class="card-text">Rs.{{salary}}/-</p>
-          <div class="alert alert-success d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-              <use xlink:href="#check-circle-fill" />
-            </svg>
-            <div>
-              Your income is need_to_update!
+            <!--If there is salary data-->
+            {% comment %} {% if obj_income.first.amount %} {% endcomment %}
+            <p class="card-text">Rs.{{salary}}/-</p>
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                <use xlink:href="#check-circle-fill" />
+              </svg>
+              <div>
+                Your income is need_to_update!
+              </div>
             </div>
-          </div>
-          {% else %}
-          <!--If there is no salary data-->
-          <p class="card-text">Rs.0/-</p>
-          {% endif %}
+            {% comment %} {% else %}
+            <!--If there is no salary data-->
+            <p class="card-text">Rs.0/-</p>
+            {% endif %} {% endcomment %}
           {% endif %}
         </div>
       </div>
@@ -54,61 +54,67 @@
     <div class="col">
       <div class="card">
         {% if obj_income|length == 0 %}
-        <div class="card-header">Present Month</div>
+          <div class="card-header">Present Month</div>
         {% else %}
-        <div class="card-header">As of now</div>
+          <div class="card-header">As of now</div>
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">End of Month</h5>
           <p class="card-text">Rs.{{end_of_month}}/-</p>
+          {% comment %} Form for updating the End of Month if it is not updated or created {% endcomment %}
           <form method="POST">
             {% csrf_token %}
             {% if need_to_update == 'False' %}
-            <div class="d-grid gap-2 col-6 mx-auto">
-              <button type="submit" name="submit" class="btn btn-default bg-warning" value="add">Add Rs.{{end_of_month}}/-</button>
-            </div>
-            {% elif need_to_update == 'update' %}
-            <div class="alert alert-warning d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
-                <use xlink:href="#exclamation-triangle-fill" />
-              </svg>
-              <div>
-                Please update! End of month is not correct in the Database.
+              <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" name="submit" class="btn btn-default bg-warning" value="add">Add Rs.{{end_of_month}}/-</button>
               </div>
-            </div>
-            <div class="d-grid gap-2 col-6 mx-auto">
-              <button type="button" class="btn btn-default bg-warning" data-bs-toggle="modal" data-bs-target="#updateModal">Update</button>
-            </div>
-
-            <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="updateModalLabel">Update the End of Month</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    Last recorded En of Month amount in database is Rs.{{end_of_month_noted}}
-                    New End of Month amount is Rs.{{end_of_month}} 
-                    <input type="number" name="end_of_month" required="" id="id_end_of_month" value="{{end_of_month}}" class="invisible">
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="submit" class="btn btn-default bg-warning" value="update">Save End of Month - Rs.{{end_of_month}}/-</button>
-                  </div>
+            {% elif need_to_update == 'update' %}
+              <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
+                  <use xlink:href="#exclamation-triangle-fill" />
+                </svg>
+                <div>
+                  Please update! End of month is not correct in the Database.
                 </div>
               </div>
-            </div>
-            {% else %}
-            <div class="alert alert-success d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-                <use xlink:href="#check-circle-fill" />
-              </svg>
-              <div>
-                Up-to-date!!!
+              {% comment %} Trigger update End of Month Modal {% endcomment %}
+              <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="button" class="btn btn-default bg-warning" data-bs-toggle="modal" data-bs-target="#updateModal">Update</button>
               </div>
-            </div>
+              {% comment %} Modal {% endcomment %}
+                <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">   
+                  <div class="modal-dialog">    
+                    <div class="modal-content">   
+                      <div class="modal-header">    
+                        <h5 class="modal-title" id="updateModalLabel">Update the End of Month</h5>    
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>    
+                      </div>    
+                      <div class="modal-body">
+                        Last recorded End of Month amount in database is <b>Rs.{{end_of_month_noted}}</b>   
+                        New End of Month amount is Rs.{{end_of_month}}/-
+                        <div class="invisible">                       
+                          <input type="number" name="end_of_month" required="" id="id_end_of_month" value="{{end_of_month}}" 
+                          class="form-control-plaintext" readonly>
+                        </div>
+                      </div>    
+                      <div class="modal-footer">    
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>    
+                        <button type="submit" name="submit" class="btn btn-default bg-warning" value="update">Save End of Month - Rs.{{end_of_month}}/-</button>
+                      </div>    
+                    </div>    
+                  </div>    
+                </div>    
+            {% else %}
+              <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                  <use xlink:href="#check-circle-fill" />
+                </svg>
+                <div>
+                  Up-to-date!!!
+                </div>
+              </div>
             {% endif %}
+          </form>
         </div>
       </div>
     </div>
@@ -120,24 +126,33 @@
         <div class="card-body">
           <h5 class="card-title">End of Month</h5>
           <p class="card-text">{% if total_eom %} Rs.{{total_eom}}/- {% else %} Rs.{{end_of_month}}/- {% endif %}</p>
-          {% if need_to_update == 'False' %}
-          <div class="alert alert-danger d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
-              <use xlink:href="#exclamation-triangle-fill" />
-            </svg>
-            <div>
-              Not need_to_update !!!
+          {% if need_to_update == 'update'  %}
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
+                <use xlink:href="#exclamation-triangle-fill" />
+              </svg>
+              <div>
+                Not updated !!!
+              </div>
             </div>
-          </div>
+          {% elif need_to_update == 'False'  %}
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                <use xlink:href="#exclamation-triangle-fill" />
+              </svg>
+              <div>
+                Not updated !!!
+              </div>
+            </div>
           {% else %}
-          <div class="alert alert-success d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-              <use xlink:href="#check-circle-fill" />
-            </svg>
-            <div>
-              Up-to-date!!!
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                <use xlink:href="#check-circle-fill" />
+              </svg>
+              <div>
+                Up-to-date!!!
+              </div>
             </div>
-          </div>
           {% endif %}
         </div>
       </div>
