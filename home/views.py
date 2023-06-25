@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 plt.rcdefaults()
 today = date.today()
 month = today.strftime("%m")
+gf = GraphFunctions()
 
 def dashboard(request):
     form_income = Income()
@@ -55,11 +56,14 @@ def all_transactions(request):
     # get income filtered by current month and sorted by time
     obj_income = models.Income.objects.all().filter(
         date__month=month).order_by('-time')  
+    
     # get expenses filtered by current month and sorted by time
     obj_expenses = models.expenses.objects.all().filter(
         date__month=month).order_by('-time') 
+    
     # get all expenses sorted by time
     obj_overall_expenses = models.expenses.objects.all().order_by('-time')
+    
     # get all EOM(End Of Month) records
     obj_eom = models.end_of_month_model.objects.all() 
 
@@ -68,28 +72,46 @@ def all_transactions(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # salary , total expenses, end of month
-    salary = 0
+    # salary , total expenses, end of month, end of month last noted, total calculated end of month value
+    salary, total_expenses, end_of_month, end_of_month_noted, total_eom= 0, 0, 0, 0, 0
+    
+    #total salary
     for obj in obj_income:
         salary += obj.amount
-
-    total_expenses, end_of_month = 0, 0
+    
+    #total expenses
     for obj in obj_expenses:
         total_expenses += obj.cost
-
+    
+    #End Of Month after deducting total expenses from salary
     end_of_month = salary-total_expenses
 
-    end_of_month_now = 0
-    for obj in obj_eom.filter(date__month=month):
-        end_of_month_now = obj.end_of_month
+    #total End Of Month
+    for obj in obj_eom:
+        total_eom = total_eom + obj.end_of_month
 
-    if obj_eom.filter(date__month=month).count() == 0:
-        updated = 'False'
-    elif obj_eom.filter(date__month=month).count() > 0 and end_of_month_now != end_of_month:
-        updated = 'update'
+    #End Of Month from the last record in db
+    end_of_month_noted = 0
+    latest_obj_eom = obj_eom.filter(date__month=month).order_by('-time').first()
+    if latest_obj_eom is None: 
+        end_of_month_noted = 0
     else:
-        updated = 'True'
+        end_of_month_noted = latest_obj_eom.end_of_month   
 
+    #Checking if the End Of Month record needs to be updated or not
+    # No End Of Month record    
+    if obj_eom.filter(date__month=month).count() == 0:
+        need_to_update = 'False'
+
+    # End Of Month record is available but it is not updated to current End Of Month
+    elif obj_eom.filter(date__month=month).count() > 0 and end_of_month_noted != end_of_month:
+        need_to_update = 'update'
+
+    #End Of Month is up to date
+    else:
+        need_to_update = 'True'
+
+    #Form to update the End of Month
     form_eom_now = end_of_month_form(
         request.POST or None, instance=obj_eom.filter(date__month=month).first())
 
@@ -105,9 +127,7 @@ def all_transactions(request):
             eom_form_obj.save()
             return redirect(reverse('home:all-transactions'))
 
-    total_eom = 0
-    for obj in obj_eom:
-        total_eom = total_eom + obj.end_of_month
+
 
     # category wise monthly data
     tot_monthly_exp = []
@@ -200,13 +220,13 @@ def all_transactions(request):
     y_pos = np.arange(len(types))
     exp = [total_dues, total_loans, total_food, total_electronics,
            total_subscriptions, total_entertainment, total_rent, total_transportation]
-    graph_category_wise_this_month = get_graph_barh(
-        y_pos, exp, types, 'Expenses', 'Category wise - This month', '')
+    graph_category_wise_this_month = gf.get_graph_barh(
+        y_pos, exp, types, 'Expenses', 'Category wise - This month')
 
     # category wise piechart
     types = ['Dues', 'Loan', 'Food', 'Electronics',
              'Subscriptions', 'Entertainment', 'Rent', 'Transportation']
-    graph_category_wise_overall_pie = get_graph_pie(
+    graph_category_wise_overall_pie = gf.get_graph_pie(
         overall_exp, types, 'Category wise - Overall')
 
     # info beside the pie chart
@@ -232,7 +252,7 @@ def all_transactions(request):
         datedb = obj.date
         x.append(datedb.strftime("%m"))
         y.append(obj.end_of_month)
-    graph_total_eom = get_graph_plot(
+    graph_total_eom = gf.get_graph_plot(
         x, y, 'Month', 'Amount', 'End of Months graph', 'green')
 
     obj_eom_rev = obj_eom.order_by('-date')
@@ -245,16 +265,16 @@ def all_transactions(request):
         'end_of_month': end_of_month,
         'total_expenses': total_expenses,
         'total_eom': total_eom,
-        'updated': updated,
+        'need_to_update': need_to_update,
         'form_eom_now': form_eom_now,
-        'graph_total_eom': graph_total_eom,
-        'end_of_month_now': end_of_month_now,
-        'graph_category_wise_this_month': graph_category_wise_this_month,
-        'graph_category_wise_overall_pie': graph_category_wise_overall_pie,
+        'end_of_month_noted': end_of_month_noted,
         'types': types,
         'overall_exp': overall_exp,
         'category_wise_overall': category_wise_overall,
         'category_wise_monthly_exp': category_wise_monthly_exp,
+        'graph_total_eom': graph_total_eom,
+        'graph_category_wise_this_month': graph_category_wise_this_month,
+        'graph_category_wise_overall_pie': graph_category_wise_overall_pie,
     }
 
     return render(request, 'all_transactions.html', context)
@@ -326,84 +346,13 @@ def download_csv_all(request):
     writer.writerow(['Name', 'Type', 'Cost', 'Date', 'Time', 'Comment'])
     for obj in obj_expenses:
         name = obj.name
-        type = obj.type
+        expense_type = obj.type
         cost = obj.cost
         datedb = obj.date
         time = obj.time
         comment = obj.comment
-        writer.writerow([name, type, cost, datedb, time, comment])
+        writer.writerow([name, expense_type, cost, datedb, time, comment])
     return response
-
-
-def addlabels(x, y):
-    for i in range(len(x)):
-        plt.text(i, y[i], y[i])
-
-
-def get_graph_bar(x, y, xlabel, ylabel, graph_title, colour):
-    # plt.xkcd()
-    fig = plt.figure()
-    # colours = []
-    plt.bar(x, y)
-    addlabels(x, y)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.title(graph_title)
-    plt.tight_layout()
-    imgdata = StringIO()
-    fig.savefig(imgdata, format='svg')
-    imgdata.seek(0)
-    data = imgdata.getvalue()
-    return data
-
-
-def get_graph_barh(y_pos, exp, types, xlabel, graph_title, colour):
-    # plt.xkcd()
-    fig = plt.figure()
-    colours = ['#0d6efd', '#6610f2', '#0dcaf0', '#d63384',
-               '#dc3545', '#fd7e14', '#ffc107', '#198754']
-    plt.barh(y_pos, exp, align='center', alpha=0.8, color=colours)
-    plt.yticks(y_pos, types)
-    plt.xlabel(xlabel)
-    plt.title(graph_title)
-    plt.tight_layout()
-    imgdata = StringIO()
-    fig.savefig(imgdata, format='svg')
-    imgdata.seek(0)
-    data = imgdata.getvalue()
-    return data
-
-
-def get_graph_plot(x, y, xlabel, ylabel, graph_title, colour):
-    fig = plt.figure()
-    plt.plot(x, y, color=colour, label=graph_title,
-             marker='o', linestyle='--', linewidth=0.7)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.title(graph_title)
-    plt.tight_layout()
-    imgdata = StringIO()
-    fig.savefig(imgdata, format='svg')
-    imgdata.seek(0)
-    data = imgdata.getvalue()
-    return data
-
-
-def get_graph_pie(overall_exp, types, graph_title):
-    fig = plt.figure()
-    colours = ['#0d6efd', '#6610f2', '#0dcaf0', '#d63384',
-               '#dc3545', '#fd7e14', '#ffc107', '#33ff66']
-    explode = [0, 0.2, 0.1, 0.2, 0.2, 0.2, 0, 0.1]
-    plt.pie(overall_exp, labels=types, explode=explode, colors=colours, wedgeprops={
-            'edgecolor': 'black', }, shadow=True, autopct="%1.1f%%", rotatelabels=True)
-    plt.title(graph_title)
-    plt.tight_layout()
-    imgdata = StringIO()
-    fig.savefig(imgdata, format='svg')
-    imgdata.seek(0)
-    data = imgdata.getvalue()
-    return data
-
 
 def calc(request):
     return render(request, 'calc.html')

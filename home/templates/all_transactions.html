@@ -38,7 +38,7 @@
               <use xlink:href="#check-circle-fill" />
             </svg>
             <div>
-              Your income is Updated!
+              Your income is need_to_update!
             </div>
           </div>
           {% else %}
@@ -63,21 +63,21 @@
           <p class="card-text">Rs.{{end_of_month}}/-</p>
           <form method="POST">
             {% csrf_token %}
-            {% if updated == 'False' %}
+            {% if need_to_update == 'False' %}
             <div class="d-grid gap-2 col-6 mx-auto">
               <button type="submit" name="submit" class="btn btn-default bg-warning" value="add">Add Rs.{{end_of_month}}/-</button>
             </div>
-            {% elif updated == 'update' %}
+            {% elif need_to_update == 'update' %}
             <div class="alert alert-warning d-flex align-items-center" role="alert">
               <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
                 <use xlink:href="#exclamation-triangle-fill" />
               </svg>
               <div>
-                Please update!!!
+                Please update! End of month is not correct in the Database.
               </div>
             </div>
             <div class="d-grid gap-2 col-6 mx-auto">
-              <button type="button" class="btn btn-default bg-warning" data-bs-toggle="modal" data-bs-target="#updateModal">Update Rs.{{end_of_month}}/-</button>
+              <button type="button" class="btn btn-default bg-warning" data-bs-toggle="modal" data-bs-target="#updateModal">Update</button>
             </div>
 
             <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
@@ -88,12 +88,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    The present end of month Rs.{{end_of_month}} mismatch with database end of month Rs.{{end_of_month_now}}
+                    Last recorded En of Month amount in database is Rs.{{end_of_month_noted}}
+                    New End of Month amount is Rs.{{end_of_month}} 
                     <input type="number" name="end_of_month" required="" id="id_end_of_month" value="{{end_of_month}}" class="invisible">
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" name="submit" class="btn btn-default bg-warning" value="update">Save change Rs.{{end_of_month}}/-</button>
+                    <button type="submit" name="submit" class="btn btn-default bg-warning" value="update">Save End of Month - Rs.{{end_of_month}}/-</button>
                   </div>
                 </div>
               </div>
@@ -119,13 +120,13 @@
         <div class="card-body">
           <h5 class="card-title">End of Month</h5>
           <p class="card-text">{% if total_eom %} Rs.{{total_eom}}/- {% else %} Rs.{{end_of_month}}/- {% endif %}</p>
-          {% if updated == 'False' %}
+          {% if need_to_update == 'False' %}
           <div class="alert alert-danger d-flex align-items-center" role="alert">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
             <div>
-              Not Updated !!!
+              Not need_to_update !!!
             </div>
           </div>
           {% else %}

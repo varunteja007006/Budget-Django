@@ -49,6 +49,7 @@ class sip_product_form(ModelForm):
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+    
 class sip_form(ModelForm):
     class Meta:
         model = sip

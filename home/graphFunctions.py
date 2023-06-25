@@ -9,10 +9,8 @@ def addlabels(x, y):
 
 class GraphFunctions:
 
-    def get_graph_bar(x, y, xlabel, ylabel, graph_title, colour):
-        # plt.xkcd()
+    def get_graph_bar(self, x, y, xlabel, ylabel, graph_title):
         fig = plt.figure()
-        # colours = []
         plt.bar(x, y)
         addlabels(x, y)
         plt.xlabel(xlabel)
@@ -26,8 +24,7 @@ class GraphFunctions:
         return data
 
 
-    def get_graph_barh(y_pos, exp, types, xlabel, graph_title, colour):
-        # plt.xkcd()
+    def get_graph_barh(self, y_pos, exp, types, xlabel, graph_title):
         fig = plt.figure()
         colours = ['#0d6efd', '#6610f2', '#0dcaf0', '#d63384',
                    '#dc3545', '#fd7e14', '#ffc107', '#198754']
@@ -43,7 +40,7 @@ class GraphFunctions:
         return data
 
 
-    def get_graph_plot(x, y, xlabel, ylabel, graph_title, colour):
+    def get_graph_plot(self, x, y, xlabel, ylabel, graph_title, colour):
         fig = plt.figure()
         plt.plot(x, y, color=colour, label=graph_title,
                  marker='o', linestyle='--', linewidth=0.7)
@@ -58,7 +55,7 @@ class GraphFunctions:
         return data
 
 
-    def get_graph_pie(overall_exp, types, graph_title):
+    def get_graph_pie(self,overall_exp, types, graph_title):
         fig = plt.figure()
         colours = ['#0d6efd', '#6610f2', '#0dcaf0', '#d63384',
                    '#dc3545', '#fd7e14', '#ffc107', '#33ff66']
