@@ -1,57 +1,52 @@
-from .graphFunctions import GraphFunctions
-from django.core.paginator import Paginator
 from datetime import date
+
+from .graphFunctions import GraphFunctions
 from . import models
 from .forms import end_of_month_form, Income, expenses, sip_form, sip_product_form, sip_platform_form
+
+from django.core.paginator import Paginator
 from django.contrib import messages
 from django.shortcuts import redirect, render, reverse
 from django.http import HttpResponse
+
 import numpy as np
 from io import StringIO
 import csv
-from smtplib import quotedata
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
-from numpy.lib.function_base import append
-plt.rcdefaults()
 
+plt.rcdefaults()
 today = date.today()
 month = today.strftime("%m")
-
 
 def dashboard(request):
     form_income = Income()
     form_expenses = expenses()
-
+    #get income only first 3 records for the current month and sorted by time
     obj_income = models.Income.objects.all().filter(
-        date__month=month).order_by('-date')
+        date__month=month).order_by('-time')[:3]
+    #get expenses records for the month
     obj_expenses = models.expenses.objects.all().filter(
-        date__month=month).order_by('-time')
-
-    paginator = Paginator(obj_expenses, 3)
+        date__month=month).order_by('-time')[:8]
+    # paginator for the expenses
+    paginator = Paginator(obj_expenses, 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     context = {'form_income': form_income, 'form_expenses': form_expenses,
                'obj_income': obj_income, 'page_obj': page_obj, 'title': 'Dashboard'}
 
     if request.method == "POST":
         form_income = Income(request.POST)
         form_expenses = expenses(request.POST)
+        #check for the income form
         if form_income.is_valid():
             form_income.save()
-            form_income = Income()
-            # context={'form_income': form_income, 'form_expenses': form_expenses,
-            #             'success_income':"successfully added income",
-            #             'obj_income':obj_income, 'page_obj': page_obj}
+            #redirect to homepage/dashboard
             return redirect(reverse('home:dashboard'))
-
+        #check for the expenses form
         elif form_expenses.is_valid():
             form_expenses.save()
-            form_expenses = expenses()
-            # context={'form_income': form_income, 'form_expenses': form_expenses,
-            #             'success_expenses':"successfully added expenses",
-            #             'obj_income':obj_income, 'page_obj': page_obj}
+            #redirect to homepage/dashboard
             return redirect(reverse('home:dashboard'))
     return render(request, 'dashboard.html', context)
 
@@ -413,17 +408,4 @@ def get_graph_pie(overall_exp, types, graph_title):
 
 
 def calc(request):
-    input_one = request.GET.get("input_one")
-    input_two = request.GET.get("input_two")
-    answer, submit_type = '', ''
-    if input_two is None and input_one is None:
-        pass
-    elif request.GET.get("operation") == 'add':
-        answer = int(input_one) + int(input_two)
-        submit_type = 'Addition'
-    elif request.GET.get("operation") == 'subtract':
-        answer = int(input_one) - int(input_two)
-        submit_type = 'Subtract'
-    else:
-        answer, submit_type = '', ''
-    return render(request, 'calc.html', context={'answer': answer, 'submit_type': submit_type, 'title': 'Calculator'})
+    return render(request, 'calc.html')

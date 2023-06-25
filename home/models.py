@@ -48,6 +48,10 @@ class end_of_month_model(models.Model):
     date = models.DateField(default=date.today)
     time = models.TimeField(default=timezone.localtime)
 
+    def __str__(self):
+        #End Of Month (EOM)
+        return 'EOM_'+str(self.date)+'_'+str(self.time)
+
 #Below are SIP related transactions
 #Platform used to invest
 class sip_platform_model(models.Model):
