@@ -4,11 +4,11 @@ from django import forms
 from django.forms import ModelForm, widgets
 
 from django.forms.models import ModelChoiceField
-from .models import Income, expenses, end_of_month_model, sip_platform_model, sip_product_model, sip
+from .models import Income_model, Expenses_model, End_of_month_model, Sip_platform_model, Sip_product_model, Sip_model
 
-class Income(ModelForm):
+class Income_form(ModelForm):
     class Meta:
-        model = Income
+        model = Income_model
         fields = ['name','amount','comment']
 
     def __init__(self, *args, **kwargs):
@@ -18,9 +18,9 @@ class Income(ModelForm):
         self.fields['amount'].widget.attrs.update({'class': 'form-control',})
         self.fields['name'].widget.attrs.update({'class': 'form-control',})
 
-class expenses(ModelForm):
+class Expenses_form(ModelForm):
     class Meta:
-        model = expenses
+        model = Expenses_model
         fields = ['name','type','necessity','cost','comment']
 
     def __init__(self, *args, **kwargs):
@@ -32,27 +32,27 @@ class expenses(ModelForm):
         self.fields['type'].widget.attrs.update({'class': 'form-select',})
         self.fields['necessity'].widget.attrs.update({'class': 'form-select',})
 
-class end_of_month_form(ModelForm):
+class End_of_month_form(ModelForm):
     class Meta:
-        model = end_of_month_model
+        model = End_of_month_model
         fields = ['end_of_month']
 
-class sip_platform_form(ModelForm):
+class Sip_platform_form(ModelForm):
     class Meta:
-        model = sip_platform_model
+        model = Sip_platform_model
         fields = ['sip_platformname']
 
-class sip_product_form(ModelForm):
+class Sip_product_form(ModelForm):
     class Meta:
-        model = sip_product_model
+        model = Sip_product_model
         fields = ['sip_productname']
 
 class DateInput(forms.DateInput):
     input_type = 'date'
     
-class sip_form(ModelForm):
+class Sip_form(ModelForm):
     class Meta:
-        model = sip
+        model = Sip_model
         fields = ['sip_platform_name', 'sip_product_name', 'amount', 'sip_date', 'comment']
         widgets = {'sip_date': DateInput()}
 

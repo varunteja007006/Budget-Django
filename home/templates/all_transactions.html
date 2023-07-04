@@ -230,7 +230,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for expenses in page_obj %}
+                  {% for expenses in expenses_page_obj %}
                   <tr>
                     <td>
                       {{ expenses.name|capfirst }}
@@ -255,24 +255,24 @@
                 </tbody>
               </table>
               <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
+                {% if expenses_page_obj.has_previous %}
                 <li><a class="btn btn-outline-dark mb-4" href="?page=1">First</a></li>
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ page_obj.previous_page_number }}">
+                <li><a class="btn btn-outline-dark mb-4" href="?page={{ expenses_page_obj.previous_page_number }}">
                     << </a>
                 </li>
                 {% endif %}
-                {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
+                {% for num in expenses_page_obj.paginator.page_range %}
+                {% if expenses_page_obj.number == num %}
                 <li><a class="btn btn-dark mb-4" href="?page={{ num }}">
                     {{ num }}</a></li>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                {% elif num > expenses_page_obj.number|add:'-3' and num < expenses_page_obj.number|add:'3' %}
                 <li><a class="btn btn-outline-dark mb-4" href="?page={{ num }}">
                     {{ num }}</a></li>
                 {% endif %}
                 {% endfor %}
-                {% if page_obj.has_next %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ page_obj.next_page_number }}"> >> </a></li>
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ page_obj.paginator.num_pages }}"> Last </a></li>
+                {% if expenses_page_obj.has_next %}
+                <li><a class="btn btn-outline-dark mb-4" href="?page={{ expenses_page_obj.next_page_number }}"> >> </a></li>
+                <li><a class="btn btn-outline-dark mb-4" href="?page={{ expenses_page_obj.paginator.num_pages }}"> Last </a></li>
                 {% endif %}
               </ul>
             </div>

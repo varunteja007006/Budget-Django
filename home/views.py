@@ -1,8 +1,8 @@
 from datetime import date
 
 from .graphFunctions import GraphFunctions
-from . import models
-from .forms import end_of_month_form, Income, expenses, sip_form, sip_product_form, sip_platform_form
+from .models import Income_model, Expenses_model, Sip_model, Sip_platform_model, Sip_product_model, End_of_month_model
+from .forms import End_of_month_form, Income_form, Expenses_form, Sip_form, Sip_product_form, Sip_platform_form, Sip_form
 
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -14,6 +14,7 @@ from io import StringIO
 import csv
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
+from collections import defaultdict
 
 plt.rcdefaults()
 today = date.today()
@@ -21,13 +22,13 @@ month = today.strftime("%m")
 gf = GraphFunctions()
 
 def dashboard(request):
-    form_income = Income()
-    form_expenses = expenses()
+    form_income = Income_form()
+    form_expenses = Expenses_form()
     #get income only first 3 records for the current month and sorted by time
-    obj_income = models.Income.objects.all().filter(
+    obj_income = Income_model.objects.all().filter(
         date__month=month).order_by('-time')[:3]
     #get expenses records for the month
-    obj_expenses = models.expenses.objects.all().filter(
+    obj_expenses = Expenses_model.objects.all().filter(
         date__month=month).order_by('-time')[:8]
     # paginator for the expenses
     paginator = Paginator(obj_expenses, 4)
@@ -37,8 +38,8 @@ def dashboard(request):
                'obj_income': obj_income, 'page_obj': page_obj, 'title': 'Dashboard'}
 
     if request.method == "POST":
-        form_income = Income(request.POST)
-        form_expenses = expenses(request.POST)
+        form_income = Income_form(request.POST)
+        form_expenses = Expenses_form(request.POST)
         #check for the income form
         if form_income.is_valid():
             form_income.save()
@@ -54,23 +55,23 @@ def dashboard(request):
 
 def all_transactions(request):
     # get income filtered by current month and sorted by time
-    obj_income = models.Income.objects.all().filter(
+    obj_income = Income_model.objects.all().filter(
         date__month=month).order_by('-time')  
     
     # get expenses filtered by current month and sorted by time
-    obj_expenses = models.expenses.objects.all().filter(
+    obj_expenses = Expenses_model.objects.all().filter(
         date__month=month).order_by('-time') 
     
     # get all expenses sorted by time
-    obj_overall_expenses = models.expenses.objects.all().order_by('-time')
+    obj_overall_expenses = Expenses_model.objects.all().order_by('-time')
     
     # get all EOM(End Of Month) records
-    obj_eom = models.end_of_month_model.objects.all() 
+    obj_eom = End_of_month_model.objects.all() 
 
     # Pagination for the current month expenses
     paginator = Paginator(obj_expenses, 10)
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    expenses_page_obj = paginator.get_page(page_number)
 
     # salary , total expenses, end of month, end of month last noted, total calculated end of month value
     salary, total_expenses, end_of_month, end_of_month_noted, total_eom= 0, 0, 0, 0, 0
@@ -91,7 +92,6 @@ def all_transactions(request):
         total_eom = total_eom + obj.end_of_month
 
     #End Of Month from the last record in db
-    end_of_month_noted = 0
     latest_obj_eom = obj_eom.filter(date__month=month).order_by('-time').first()
     if latest_obj_eom is None: 
         end_of_month_noted = 0
@@ -112,7 +112,7 @@ def all_transactions(request):
         need_to_update = 'True'
 
     #Form to update the End of Month
-    form_eom_now = end_of_month_form(
+    form_eom_now = End_of_month_form(
         request.POST or None, instance=obj_eom.filter(date__month=month).first())
 
     if 'submit' in request.POST:
@@ -126,125 +126,51 @@ def all_transactions(request):
             eom_form_obj = models.end_of_month_model(end_of_month=end_of_month)
             eom_form_obj.save()
             return redirect(reverse('home:all-transactions'))
-
-
-
-    # category wise monthly data
-    tot_monthly_exp = []
-    total_dues = 0
-    for obj in obj_expenses.filter(type='Dues'):
-        total_dues = total_dues + obj.cost
-    tot_monthly_exp.append(total_dues)
-
-    total_loans = 0
-    for obj in obj_expenses.filter(type='Loan'):
-        total_loans = total_loans + obj.cost
-    tot_monthly_exp.append(total_loans)
-
-    total_food = 0
-    for obj in obj_expenses.filter(type='Food'):
-        total_food = total_food + obj.cost
-    tot_monthly_exp.append(total_food)
-
-    total_electronics = 0
-    for obj in obj_expenses.filter(type='Electronics'):
-        total_electronics = total_electronics + obj.cost
-    tot_monthly_exp.append(total_electronics)
-
-    total_subscriptions = 0
-    for obj in obj_expenses.filter(type='Subscriptions'):
-        total_subscriptions = total_subscriptions + obj.cost
-    tot_monthly_exp.append(total_subscriptions)
-
-    total_entertainment = 0
-    for obj in obj_expenses.filter(type='Entertainment'):
-        total_entertainment = total_entertainment + obj.cost
-    tot_monthly_exp.append(total_entertainment)
-
-    total_rent = 0
-    for obj in obj_expenses.filter(type='Rent'):
-        total_rent = total_rent + obj.cost
-    tot_monthly_exp.append(total_rent)
-
-    total_transportation = 0
-    for obj in obj_expenses.filter(type='Transportation'):
-        total_transportation = total_transportation + obj.cost
-    tot_monthly_exp.append(total_transportation)
-
-    if tot_monthly_exp.count(0) == 8:
-        tot_monthly_exp.clear()
-    tot_monthly_exp = [1, 1, 1, 1, 1, 1, 1, 1]
-
-    # overall expenses catergory wise
-    overall_exp = []
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Dues'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Loan'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Food'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Electronics'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Subscriptions'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Entertainment'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Rent'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    tot = 0
-    for obj in obj_overall_expenses.filter(type='Transportation'):
-        tot = tot + obj.cost
-    overall_exp.append(tot)
-    if overall_exp.count(0) == 8:
-        overall_exp.clear()
-        overall_exp = [1, 1, 1, 1, 1, 1, 1, 1]
+    
+    expenses_type_list = ['Dues', 'Loan', 'Food', 'Electronics', 'Subscriptions', 'Entertainment', 'Rent', 'Transportation']
+    #Get expenses categorised by type
+    expenses_by_type = dict.fromkeys(expenses_type_list, 0)
+    for item in expenses_type_list:
+        for obj in obj_expenses.filter(type=item):
+            expenses_by_type[item] += obj.cost
+    #Get overall expenses categorised by type
+    overall_expenses_by_type = dict.fromkeys(expenses_type_list, 0)
+    for item in expenses_type_list:
+        for obj in obj_expenses.filter(type=item):
+            overall_expenses_by_type[item] += obj.cost
 
     # graphs
     # category wise for this month
-    types = ['Dues', 'Loan', 'Food', 'Electronics',
-             'Subscriptions', 'Entertainment', 'Rent', 'Transportation']
-    y_pos = np.arange(len(types))
-    exp = [total_dues, total_loans, total_food, total_electronics,
-           total_subscriptions, total_entertainment, total_rent, total_transportation]
+    y_pos = np.arange(len(expenses_type_list))
     graph_category_wise_this_month = gf.get_graph_barh(
-        y_pos, exp, types, 'Expenses', 'Category wise - This month')
+        y_pos, list(expenses_by_type.values()), expenses_type_list, 'Expenses', 'Category wise - This month')
 
     # category wise piechart
-    types = ['Dues', 'Loan', 'Food', 'Electronics',
-             'Subscriptions', 'Entertainment', 'Rent', 'Transportation']
+    #remove the '0' valued keys in overall_expenses_by_type dictionary & save it to filtered_overall_expenses_by_type dictionary.
+    filtered_overall_expenses_by_type = {}
+    for key, value in overall_expenses_by_type.items():
+        if value!=0:
+            filtered_overall_expenses_by_type[key] = value
+    # category wise piechart
     graph_category_wise_overall_pie = gf.get_graph_pie(
-        overall_exp, types, 'Category wise - Overall')
+        list(filtered_overall_expenses_by_type.values()), list(filtered_overall_expenses_by_type.keys()), '')
 
     # info beside the pie chart
     category_wise_overall = []
-    a = []
-    for i in range(len(types)):
-        a.append(types[i])
-        a.append(overall_exp[i])
-        category_wise_overall.append(a)
-        a = []
+    # a = []
+    # for i in range(len(expenses_type_list)):
+    #     a.append(expenses_type_list[i])
+    #     a.append(overall_exp[i])
+    #     category_wise_overall.append(a)
+    #     a = []
 
     category_wise_monthly_exp = []
-    a = []
-    for i in range(len(types)):
-        a.append(types[i])
-        a.append(tot_monthly_exp[i])
-        category_wise_monthly_exp.append(a)
-        a = []
+    # a = []
+    # for i in range(len(types)):
+    #     a.append(types[i])
+    #     a.append(tot_monthly_exp[i])
+    #     category_wise_monthly_exp.append(a)
+    #     a = []
 
     x = []
     y = []
@@ -254,22 +180,22 @@ def all_transactions(request):
         y.append(obj.end_of_month)
     graph_total_eom = gf.get_graph_plot(
         x, y, 'Month', 'Amount', 'End of Months graph', 'green')
-
+    
+    # All the End of Month records - Latest to Oldest
     obj_eom_rev = obj_eom.order_by('-date')
+    
     # contexts
     context = {
         'obj_income': obj_income,
         'obj_eom_rev': obj_eom_rev,
-        'page_obj': page_obj,
-        'salary': salary,
-        'end_of_month': end_of_month,
-        'total_expenses': total_expenses,
-        'total_eom': total_eom,
-        'need_to_update': need_to_update,
+        'expenses_page_obj': expenses_page_obj,
+        'salary': salary, # Present month salary.
+        'total_expenses': total_expenses, #expense for the present month.
+        'end_of_month': end_of_month, # End of month for the present month calculated from the difference of salary and total expenses.
+        'end_of_month_noted': end_of_month_noted, #End of month of the latest record stored in DB.
+        'total_eom': total_eom, # overall End of month calculated by adding all the End of month records in DB.
+        'need_to_update': need_to_update, # Update flag when end_of_month does not match end_of_month_noted.
         'form_eom_now': form_eom_now,
-        'end_of_month_noted': end_of_month_noted,
-        'types': types,
-        'overall_exp': overall_exp,
         'category_wise_overall': category_wise_overall,
         'category_wise_monthly_exp': category_wise_monthly_exp,
         'graph_total_eom': graph_total_eom,
@@ -279,69 +205,66 @@ def all_transactions(request):
 
     return render(request, 'all_transactions.html', context)
 
-
 def sip(request):
-    form_sip = sip_form(request.POST)
-    form_sip_platform = sip_platform_form(request.POST)
-    form_sip_product = sip_product_form(request.POST)
+    form_sip = Sip_form(request.POST)
+    form_sip_platform = Sip_platform_form(request.POST)
+    form_sip_product = Sip_product_form(request.POST)
 
-    obj_sip = models.sip.objects.all().order_by('-sip_date')
-    obj_product = models.sip_product_model.objects.all()
-    obj_platform = models.sip_platform_model.objects.all()
+    obj_sip = Sip_model.objects.all().order_by('-sip_date')
+    obj_product = Sip_product_model.objects.all()
+    obj_platform = Sip_platform_model.objects.all()
 
     context = {'form_sip': form_sip, 'form_sip_platform': form_sip_platform, 'form_sip_product': form_sip_product,
                'obj_sip': obj_sip, 'obj_product': obj_product, 'obj_platform': obj_platform}
 
     if 'save_platform' in request.POST:
         if form_sip_platform.is_valid():
+            form_sip_platform = Sip_platform_form(request.POST)
             form_sip_platform.save()
-            form_sip_platform = sip_platform_form(request.POST)
         context['msg'] = "successfully added platform !!"
         return render(request, 'sip.html', context)
 
     elif 'save_product' in request.POST:
         if form_sip_product.is_valid():
+            form_sip_product = Sip_product_form(request.POST)
             form_sip_product.save()
-            form_sip_product = sip_product_form(request.POST)
         context['msg'] = "successfully added product !!"
         return render(request, 'sip.html', context)
 
     elif 'save_sip' in request.POST:
         if form_sip.is_valid():
+            form_sip = Sip_form(request.POST)
             form_sip.save()
-            form_sip = sip_form(request.POST)
         context['msg'] = "successfully added SIP !!"
         return render(request, 'sip.html', context)
 
     return render(request, 'sip.html', context)
-
 
 def download_csv(request):
     response = HttpResponse(
         content_type='text/csv',
         headers={'Content-Disposition': 'attachment; filename="budget.csv"'},
     )
-    obj_expenses = models.expenses.objects.all().filter(
+    obj_expenses = Expenses_model.objects.all().filter(
         date__month=month).order_by('-time')
     writer = csv.writer(response)
     writer.writerow(['Name', 'Type', 'Cost', 'Date', 'Time', 'Comment'])
     for obj in obj_expenses:
         name = obj.name
-        type = obj.type
+        expense_type = obj.type
         cost = obj.cost
         datedb = obj.date
         time = obj.time
         comment = obj.comment
-        writer.writerow([name, type, cost, datedb, time, comment])
+        writer.writerow([name, expense_type, cost, datedb, time, comment])
     return response
-
 
 def download_csv_all(request):
     response = HttpResponse(
         content_type='text/csv',
         headers={'Content-Disposition': 'attachment; filename="all_budget.csv"'},
     )
-    obj_expenses = models.expenses.objects.all().order_by('-time')
+    obj_expenses = Expenses_model.objects.all().order_by('-time')
     writer = csv.writer(response)
     writer.writerow(['Name', 'Type', 'Cost', 'Date', 'Time', 'Comment'])
     for obj in obj_expenses:

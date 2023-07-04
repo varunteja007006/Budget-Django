@@ -59,8 +59,8 @@ class GraphFunctions:
         fig = plt.figure()
         colours = ['#0d6efd', '#6610f2', '#0dcaf0', '#d63384',
                    '#dc3545', '#fd7e14', '#ffc107', '#33ff66']
-        explode = [0, 0.2, 0.1, 0.2, 0.2, 0.2, 0, 0.1]
-        plt.pie(overall_exp, labels=types, explode=explode, colors=colours, wedgeprops={
+        explode = [0.05, 0.2, 0.05, 0.2, 0.2, 0.2, 0, 0.1]
+        plt.pie(overall_exp, labels=types, explode=explode[:len(types)], colors=colours, wedgeprops={
                 'edgecolor': 'black', }, shadow=True, autopct="%1.1f%%", rotatelabels=True)
         plt.title(graph_title)
         plt.tight_layout()

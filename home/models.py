@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import date
 
 # Create your models here.
-class Income(models.Model):
+class Income_model(models.Model):
     name = models.CharField(max_length=150)
     amount = models.IntegerField()
     date = models.DateField(default=date.today)
@@ -16,7 +16,7 @@ class Income(models.Model):
     def __str__(self):
         return self.name
     
-class expenses(models.Model):
+class Expenses_model(models.Model):
     name = models.CharField(max_length=150)
     Type_Choices = [
         ('Dues', 'Dues'),
@@ -43,7 +43,7 @@ class expenses(models.Model):
     def __str__(self):
         return self.name
 
-class end_of_month_model(models.Model):
+class End_of_month_model(models.Model):
     end_of_month = models.IntegerField()
     date = models.DateField(default=date.today)
     time = models.TimeField(default=timezone.localtime)
@@ -54,23 +54,23 @@ class end_of_month_model(models.Model):
 
 #Below are SIP related transactions
 #Platform used to invest
-class sip_platform_model(models.Model):
+class Sip_platform_model(models.Model):
     sip_platformname = models.CharField(max_length=250)
 
     def __str__(self):
         return self.sip_platformname
 
 #SIP products or fund manager
-class sip_product_model(models.Model):
+class Sip_product_model(models.Model):
     sip_productname = models.CharField(max_length=250)
     
     def __str__(self):
         return self.sip_productname
 
 #SIP Transaction model    
-class sip(models.Model):
-    sip_platform_name = models.ForeignKey(sip_platform_model, on_delete=models.CASCADE)
-    sip_product_name = models.ForeignKey(sip_product_model, on_delete=models.CASCADE)
+class Sip_model(models.Model):
+    sip_platform_name = models.ForeignKey(Sip_platform_model, on_delete=models.CASCADE)
+    sip_product_name = models.ForeignKey(Sip_product_model, on_delete=models.CASCADE)
     amount = models.IntegerField()
     sip_date = models.DateField()
     date = models.DateField(default=date.today)
