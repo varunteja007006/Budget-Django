@@ -59,14 +59,17 @@ def all_transactions(request):
         date__month=month).order_by('-time')  
     
     # get expenses filtered by current month and sorted by time
-    obj_expenses = Expenses_model.objects.all().filter(
-        date__month=month).order_by('-time') 
-    
-    # get all expenses sorted by time
-    obj_overall_expenses = Expenses_model.objects.all().order_by('-time')
+    obj_overall_expenses = Expenses_model.objects.all().order_by('-time') 
+
+    # get expenses filtered by current month and sorted by time
+    obj_expenses = obj_overall_expenses.filter(
+        date__month=month)
     
     # get all EOM(End Of Month) records
     obj_eom = End_of_month_model.objects.all() 
+
+    # All the End of Month records - Latest to Oldest
+    obj_eom_rev = obj_eom.order_by('-date')
 
     # Pagination for the current month expenses
     paginator = Paginator(obj_expenses, 10)
@@ -128,61 +131,44 @@ def all_transactions(request):
             return redirect(reverse('home:all-transactions'))
     
     expenses_type_list = ['Dues', 'Loan', 'Food', 'Electronics', 'Subscriptions', 'Entertainment', 'Rent', 'Transportation']
+    
     #Get expenses categorised by type
-    expenses_by_type = dict.fromkeys(expenses_type_list, 0)
+    monthly_expenses_by_type = dict.fromkeys(expenses_type_list, 0)
     for item in expenses_type_list:
         for obj in obj_expenses.filter(type=item):
-            expenses_by_type[item] += obj.cost
+            monthly_expenses_by_type[item] += obj.cost
+    
     #Get overall expenses categorised by type
     overall_expenses_by_type = dict.fromkeys(expenses_type_list, 0)
     for item in expenses_type_list:
-        for obj in obj_expenses.filter(type=item):
+        for obj in obj_overall_expenses.filter(type=item):
             overall_expenses_by_type[item] += obj.cost
 
     # graphs
     # category wise for this month
     y_pos = np.arange(len(expenses_type_list))
     graph_category_wise_this_month = gf.get_graph_barh(
-        y_pos, list(expenses_by_type.values()), expenses_type_list, 'Expenses', 'Category wise - This month')
+        y_pos, list(monthly_expenses_by_type.values()), expenses_type_list, 'Expenses', 'Category wise - This month')
 
-    # category wise piechart
-    #remove the '0' valued keys in overall_expenses_by_type dictionary & save it to filtered_overall_expenses_by_type dictionary.
+    # Overall expense piechart
+        #remove the '0' valued keys in overall_expenses_by_type dictionary & save it to filtered_overall_expenses_by_type dictionary.
     filtered_overall_expenses_by_type = {}
     for key, value in overall_expenses_by_type.items():
         if value!=0:
             filtered_overall_expenses_by_type[key] = value
-    # category wise piechart
-    graph_category_wise_overall_pie = gf.get_graph_pie(
+    
+    # Overall expense piechart
+    graph_pie_overall_expenses_by_type = gf.get_graph_pie(
         list(filtered_overall_expenses_by_type.values()), list(filtered_overall_expenses_by_type.keys()), '')
 
-    # info beside the pie chart
-    category_wise_overall = []
-    # a = []
-    # for i in range(len(expenses_type_list)):
-    #     a.append(expenses_type_list[i])
-    #     a.append(overall_exp[i])
-    #     category_wise_overall.append(a)
-    #     a = []
-
-    category_wise_monthly_exp = []
-    # a = []
-    # for i in range(len(types)):
-    #     a.append(types[i])
-    #     a.append(tot_monthly_exp[i])
-    #     category_wise_monthly_exp.append(a)
-    #     a = []
-
+    #Month End Savings graph plot
     x = []
     y = []
     for obj in obj_eom:
-        datedb = obj.date
-        x.append(datedb.strftime("%m"))
+        x.append(obj.date.strftime("%b-%Y"))
         y.append(obj.end_of_month)
     graph_total_eom = gf.get_graph_plot(
-        x, y, 'Month', 'Amount', 'End of Months graph', 'green')
-    
-    # All the End of Month records - Latest to Oldest
-    obj_eom_rev = obj_eom.order_by('-date')
+        x, y, '', 'Amount saved', 'Savings graph', 'green')
     
     # contexts
     context = {
@@ -196,11 +182,13 @@ def all_transactions(request):
         'total_eom': total_eom, # overall End of month calculated by adding all the End of month records in DB.
         'need_to_update': need_to_update, # Update flag when end_of_month does not match end_of_month_noted.
         'form_eom_now': form_eom_now,
-        'category_wise_overall': category_wise_overall,
-        'category_wise_monthly_exp': category_wise_monthly_exp,
+        #data for the tables
+        'overall_expenses_by_type_data': overall_expenses_by_type.items(),
+        'monthly_expenses_by_type_data': monthly_expenses_by_type.items(),
+        #graphs
         'graph_total_eom': graph_total_eom,
         'graph_category_wise_this_month': graph_category_wise_this_month,
-        'graph_category_wise_overall_pie': graph_category_wise_overall_pie,
+        'graph_pie_overall_expenses_by_type': graph_pie_overall_expenses_by_type,
     }
 
     return render(request, 'all_transactions.html', context)

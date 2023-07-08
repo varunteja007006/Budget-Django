@@ -1,118 +1,194 @@
-{% extends 'dashboard.html' %}
-
-
-
-{% block body %}
+{% extends 'dashboard.html' %} {% block body %}
 
 <div class="container bg-dark">
-
   <div class="row d-flex flex-row">
     <!--Salary data-->
     <div class="col">
       <div class="card border-0">
         {% if obj_income|length == 0 %}
-          <!--If there is no salary data-->
-          <div class="card-header">Present Month</div>
+        <!--If there is no salary data-->
+        <div class="card-header">Present Month</div>
         {% else %}
-          <!--If there is salary data-->
-          <div class="card-header">{{obj_income.first.date}}, {{obj_income.first.time}}</div>
+        <!--If there is salary data-->
+        <div class="card-header">
+          {{obj_income.first.date}}, {{obj_income.first.time}}
+        </div>
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">Salary</h5>
           {% if obj_income|length == 0 %}
-            <!--If there is no salary data-->
-            <div class="alert alert-danger d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
-                <use xlink:href="#exclamation-triangle-fill" />
-              </svg>
-              <div>
-                <p class="card-text">No Data</p>
-              </div>
+          <!--If there is no salary data-->
+          <div
+            class="alert alert-danger d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Danger:"
+            >
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>
+              <p class="card-text">No Data</p>
             </div>
+          </div>
           {% else %}
-            <!--If there is salary data-->
-            {% comment %} {% if obj_income.first.amount %} {% endcomment %}
-            <p class="card-text">Rs.{{salary}}/-</p>
-            <div class="alert alert-success d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-                <use xlink:href="#check-circle-fill" />
-              </svg>
-              <div>
-                Your income is need_to_update!
-              </div>
-            </div>
-            {% comment %} {% else %}
-            <!--If there is no salary data-->
-            <p class="card-text">Rs.0/-</p>
-            {% endif %} {% endcomment %}
-          {% endif %}
+          <!--If there is salary data-->
+          {% comment %} {% if obj_income.first.amount %} {% endcomment %}
+          <p class="card-text">Rs.{{salary}}/-</p>
+          <div
+            class="alert alert-success d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Success:"
+            >
+              <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>Your income is Updated !</div>
+          </div>
+          {% comment %} {% else %}
+          <!--If there is no salary data-->
+          <p class="card-text">Rs.0/-</p>
+          {% endif %} {% endcomment %} {% endif %}
         </div>
       </div>
     </div>
-    
+
     <!--End of Month data-->
     <div class="col">
       <div class="card">
         {% if obj_income|length == 0 %}
-          <div class="card-header">Present Month</div>
+        <div class="card-header">Present Month</div>
         {% else %}
-          <div class="card-header">As of now</div>
+        <div class="card-header">As of now</div>
         {% endif %}
         <div class="card-body">
-          <h5 class="card-title">End of Month</h5>
+          <h5 class="card-title">Month end savings</h5>
           <p class="card-text">Rs.{{end_of_month}}/-</p>
-          {% comment %} Form for updating the End of Month if it is not updated or created {% endcomment %}
+          {% comment %} Form for updating the End of Month if it is not updated
+          or created {% endcomment %}
           <form method="POST">
-            {% csrf_token %}
-            {% if need_to_update == 'False' %}
-              <div class="d-grid gap-2 col-6 mx-auto">
-                <button type="submit" name="submit" class="btn btn-default bg-warning" value="add">Add Rs.{{end_of_month}}/-</button>
-              </div>
+            {% csrf_token %} {% if need_to_update == 'False' %}
+            <div class="d-grid gap-2 col-6 mx-auto">
+              <button
+                type="submit"
+                name="submit"
+                class="btn btn-default bg-warning"
+                value="add"
+              >
+                Add Rs.{{end_of_month}}/-
+              </button>
+            </div>
             {% elif need_to_update == 'update' %}
-              <div class="alert alert-warning d-flex align-items-center" role="alert">
-                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
-                  <use xlink:href="#exclamation-triangle-fill" />
-                </svg>
-                <div>
-                  Please update! End of month is not correct in the Database.
+            <div
+              class="alert alert-warning d-flex align-items-center"
+              role="alert"
+            >
+              <svg
+                class="bi flex-shrink-0 me-2"
+                width="24"
+                height="24"
+                role="img"
+                aria-label="Warning:"
+              >
+                <use xlink:href="#exclamation-triangle-fill" />
+              </svg>
+              <div>
+                Please update! End of month is not correct in the Database.
+              </div>
+            </div>
+            {% comment %} Trigger update End of Month Modal {% endcomment %}
+            <div class="d-grid gap-2 col-6 mx-auto">
+              <button
+                type="button"
+                class="btn btn-default bg-warning"
+                data-bs-toggle="modal"
+                data-bs-target="#updateModal"
+              >
+                Update
+              </button>
+            </div>
+            {% comment %} Modal {% endcomment %}
+            <div
+              class="modal fade"
+              id="updateModal"
+              tabindex="-1"
+              aria-labelledby="updateModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">
+                      Update the End of Month
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    Last recorded End of Month amount in database is
+                    <b>Rs.{{end_of_month_noted}}</b>
+                    New End of Month amount is Rs.{{end_of_month}}/-
+                    <div class="invisible">
+                      <input
+                        type="number"
+                        name="end_of_month"
+                        required=""
+                        id="id_end_of_month"
+                        value="{{end_of_month}}"
+                        class="form-control-plaintext"
+                        readonly
+                      />
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="submit"
+                      name="submit"
+                      class="btn btn-default bg-warning"
+                      value="update"
+                    >
+                      Save End of Month - Rs.{{end_of_month}}/-
+                    </button>
+                  </div>
                 </div>
               </div>
-              {% comment %} Trigger update End of Month Modal {% endcomment %}
-              <div class="d-grid gap-2 col-6 mx-auto">
-                <button type="button" class="btn btn-default bg-warning" data-bs-toggle="modal" data-bs-target="#updateModal">Update</button>
-              </div>
-              {% comment %} Modal {% endcomment %}
-                <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">   
-                  <div class="modal-dialog">    
-                    <div class="modal-content">   
-                      <div class="modal-header">    
-                        <h5 class="modal-title" id="updateModalLabel">Update the End of Month</h5>    
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>    
-                      </div>    
-                      <div class="modal-body">
-                        Last recorded End of Month amount in database is <b>Rs.{{end_of_month_noted}}</b>   
-                        New End of Month amount is Rs.{{end_of_month}}/-
-                        <div class="invisible">                       
-                          <input type="number" name="end_of_month" required="" id="id_end_of_month" value="{{end_of_month}}" 
-                          class="form-control-plaintext" readonly>
-                        </div>
-                      </div>    
-                      <div class="modal-footer">    
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>    
-                        <button type="submit" name="submit" class="btn btn-default bg-warning" value="update">Save End of Month - Rs.{{end_of_month}}/-</button>
-                      </div>    
-                    </div>    
-                  </div>    
-                </div>    
+            </div>
             {% else %}
-              <div class="alert alert-success d-flex align-items-center" role="alert">
-                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-                  <use xlink:href="#check-circle-fill" />
-                </svg>
-                <div>
-                  Up-to-date!!!
-                </div>
-              </div>
+            <div
+              class="alert alert-success d-flex align-items-center"
+              role="alert"
+            >
+              <svg
+                class="bi flex-shrink-0 me-2"
+                width="24"
+                height="24"
+                role="img"
+                aria-label="Success:"
+              >
+                <use xlink:href="#check-circle-fill" />
+              </svg>
+              <div>Up-to-date!!!</div>
+            </div>
             {% endif %}
           </form>
         </div>
@@ -122,37 +198,61 @@
     <!--Overall End of Month Savings data-->
     <div class="col">
       <div class="card bg-success text-light">
-        <div class="card-header">Total</div>
+        <div class="card-header">Savings</div>
         <div class="card-body">
-          <h5 class="card-title">End of Month</h5>
-          <p class="card-text">{% if total_eom %} Rs.{{total_eom}}/- {% else %} Rs.{{end_of_month}}/- {% endif %}</p>
-          {% if need_to_update == 'update'  %}
-            <div class="alert alert-warning d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
-                <use xlink:href="#exclamation-triangle-fill" />
-              </svg>
-              <div>
-                Not updated !!!
-              </div>
-            </div>
-          {% elif need_to_update == 'False'  %}
-            <div class="alert alert-danger d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
-                <use xlink:href="#exclamation-triangle-fill" />
-              </svg>
-              <div>
-                Not updated !!!
-              </div>
-            </div>
+          <h5 class="card-title">All your Savings</h5>
+          <p class="card-text">
+            {% if total_eom %} Rs.{{total_eom}}/- {% else %}
+            Rs.{{end_of_month}}/- {% endif %}
+          </p>
+          {% if need_to_update == 'update' %}
+          <div
+            class="alert alert-warning d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Warning:"
+            >
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>Not updated !!!</div>
+          </div>
+          {% elif need_to_update == 'False' %}
+          <div
+            class="alert alert-danger d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Danger:"
+            >
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>Not updated !!!</div>
+          </div>
           {% else %}
-            <div class="alert alert-success d-flex align-items-center" role="alert">
-              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-                <use xlink:href="#check-circle-fill" />
-              </svg>
-              <div>
-                Up-to-date!!!
-              </div>
-            </div>
+          <div
+            class="alert alert-success d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Success:"
+            >
+              <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>Up-to-date!!!</div>
+          </div>
           {% endif %}
         </div>
       </div>
@@ -161,64 +261,104 @@
     <!--Overall Expenses data-->
     <div class="col">
       <div class="card bg-danger text-light">
-        <div class="card-header">Overall</div>
+        <div class="card-header">Expenses</div>
         <div class="card-body">
-          <h5 class="card-title">Total Expenditure</h5>
+          <h5 class="card-title">All the Expenditure</h5>
           <p class="card-text">Rs.{{total_expenses}}/-</p>
           {% if total_expenses > end_of_month %}
-          <div class="alert alert-danger d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+          <div
+            class="alert alert-danger d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Danger:"
+            >
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
-            <div>
-              Over limit!!!
-            </div>
+            <div>Over limit!!!</div>
           </div>
           {% else %}
-          <div class="alert alert-warning d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
+          <div
+            class="alert alert-warning d-flex align-items-center"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Warning:"
+            >
               <use xlink:href="#exclamation-triangle-fill" />
             </svg>
-            <div>
-              Under limit !!!!
-            </div>
+            <div>Under the limit</div>
           </div>
           {% endif %}
         </div>
         <div class="card-footer text-body-secondary">
-            Download Overall expenses as csv file
-            <a href="{% url 'home:download-csv-all' %}" class="btn btn-sm m-2  bg-success text-white"> 
-              <span class="material-symbols-outlined">
-                download
-              </span></a>
+          Download all your expenses in a csv file
+          <a
+            href="{% url 'home:download-csv-all' %}"
+            class="btn btn-sm m-2 bg-success text-white"
+          >
+            <span class="material-symbols-outlined"> download </span></a
+          >
         </div>
       </div>
     </div>
   </div>
 
-
-  <div class="accordion w-auto my-5 border-dark" id="accordionPanelsStayOpenExample">
-
+  <div
+    class="accordion w-auto my-5 border-dark"
+    id="accordionPanelsStayOpenExample"
+  >
+    {% comment %} Table - Monthly Expenses {% endcomment %}
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-          <span class="material-icons md-36 m-2">
-            table_view
-          </span>
-          Table - This month expenses
-          <a href="{% url 'home:download-csv' %}" class="btn btn-outline-success mx-3 shadow"> <span class="material-symbols-outlined">
-              download
-            </span></a>
+        <button
+          class="accordion-button"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseOne"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseOne"
+        >
+          <span class="material-icons md-36 m-2"> table_view </span>
+          Table - Monthly Expenses
+          <a
+            href="{% url 'home:download-csv' %}"
+            class="btn btn-outline-success mx-3 shadow"
+          >
+            <span class="material-symbols-outlined"> download </span></a
+          >
         </button>
       </h2>
-      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne" data-bs-parent="#accordionpanelsStayOpenExample">
-
+      <div
+        id="panelsStayOpen-collapseOne"
+        class="accordion-collapse collapse show"
+        aria-labelledby="panelsStayOpen-headingOne"
+        data-bs-parent="#accordionpanelsStayOpenExample"
+      >
         <div class="accordion-body">
-          <a name="download_csv" id="download_csv" class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm" href="{% url 'home:download-csv' %}" role="button">Download CSV file</a>
+          <a
+            name="download_csv"
+            id="download_csv"
+            class="btn btn-outline-success btn-sm mx-2 my-3 shadow-sm"
+            href="{% url 'home:download-csv' %}"
+            role="button"
+            >Download CSV file</a
+          >
 
           <div class="row px-2 py-2">
             <div class="col">
-              <table class="table border border-light">
+              <table class="table table-striped border border-dark">
+                <caption style="display: none">
+                  Monthly expenses
+                </caption>
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -232,88 +372,111 @@
                 <tbody>
                   {% for expenses in expenses_page_obj %}
                   <tr>
-                    <td>
-                      {{ expenses.name|capfirst }}
-                    </td>
-                    <td>
-                      {{ expenses.type|capfirst }}
-                    </td>
-                    <td>
-                      {{ expenses.cost|capfirst }}
-                    </td>
-                    <td>
-                      {{ expenses.date }}
-                    </td>
-                    <td>
-                      {{ expenses.time }}
-                    </td>
-                    <td>
-                      {{ expenses.comment|capfirst }}
-                    </td>
+                    <td>{{ expenses.name|capfirst }}</td>
+                    <td>{{ expenses.type|capfirst }}</td>
+                    <td>{{ expenses.cost|capfirst }}</td>
+                    <td>{{ expenses.date }}</td>
+                    <td>{{ expenses.time }}</td>
+                    <td>{{ expenses.comment|capfirst }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
               <ul class="pagination justify-content-center">
                 {% if expenses_page_obj.has_previous %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page=1">First</a></li>
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ expenses_page_obj.previous_page_number }}">
-                    << </a>
+                <li>
+                  <a class="btn btn-outline-dark mb-4" href="?page=1">First</a>
                 </li>
-                {% endif %}
-                {% for num in expenses_page_obj.paginator.page_range %}
+                <li>
+                  <a
+                    class="btn btn-outline-dark mb-4"
+                    href="?page={{ expenses_page_obj.previous_page_number }}"
+                  >
+                    <<
+                  </a>
+                </li>
+                {% endif %} 
+                {% for num in expenses_page_obj.paginator.page_range%} 
                 {% if expenses_page_obj.number == num %}
-                <li><a class="btn btn-dark mb-4" href="?page={{ num }}">
-                    {{ num }}</a></li>
+                <li>
+                  <a class="btn btn-dark mb-4" href="?page={{ num }}">
+                    {{ num }}</a
+                  >
+                </li>
                 {% elif num > expenses_page_obj.number|add:'-3' and num < expenses_page_obj.number|add:'3' %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ num }}">
-                    {{ num }}</a></li>
-                {% endif %}
+                <li>
+                  <a class="btn btn-outline-dark mb-4" href="?page={{ num }}">
+                    {{ num }}</a
+                  >
+                </li>
+                {% endif %} 
                 {% endfor %}
                 {% if expenses_page_obj.has_next %}
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ expenses_page_obj.next_page_number }}"> >> </a></li>
-                <li><a class="btn btn-outline-dark mb-4" href="?page={{ expenses_page_obj.paginator.num_pages }}"> Last </a></li>
+                <li>
+                  <a
+                    class="btn btn-outline-dark mb-4"
+                    href="?page={{ expenses_page_obj.next_page_number }}"
+                  >
+                    >>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="btn btn-outline-dark mb-4"
+                    href="?page={{ expenses_page_obj.paginator.num_pages }}"
+                  >
+                    Last
+                  </a>
+                </li>
                 {% endif %}
               </ul>
             </div>
           </div>
-
         </div>
       </div>
     </div>
 
+    {% comment %} Monthly expense breakdown {% endcomment %}
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingzero">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapsezero" aria-expanded="false" aria-controls="panelsStayOpen-collapsezero">
-          <span class="material-icons md-36 m-2">
-            assessment
-          </span>
-          Category wise expenses
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapsezero"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapsezero"
+        >
+          <span class="material-icons md-36 m-2"> assessment </span>
+          Monthly Expenses Breakdown
         </button>
       </h2>
-      <div id="panelsStayOpen-collapsezero" class="accordion-collapse collapse border-dark" aria-labelledby="panelsStayOpen-headingzero" data-bs-parent="#accordionpanelsStayOpenExample">
+        
+      <div
+        id="panelsStayOpen-collapsezero"
+        class="accordion-collapse collapse border-dark"
+        aria-labelledby="panelsStayOpen-headingzero"
+        data-bs-parent="#accordionpanelsStayOpenExample"
+      >
         <div class="accordion-body border-dark">
           <div class="row">
             <div class="col d-sm-none d-md-block">
               {{graph_category_wise_this_month|safe}}
             </div>
             <div class="col">
-              <table class="table table-striped border border-light ">
+              <table class="table table-striped border border-dark">
+                <caption style="display:none;">Monthly expenses breakdown</caption>
                 <thead>
                   <tr>
-                    <th>Type</th>
+                    <th>Expenses Type</th>
                     <th>Expenses</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for x,y in category_wise_monthly_exp %}
+                  {% for expense_type,expenses in monthly_expenses_by_type_data %}
                   <tr>
-                    <td>
-                      {{ x }}
-                    </td>
-                    <td>
-                      {{ y }}
-                    </td>
+                    <td>{{ expense_type }}</td>
+                    <td>{{ expenses }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -326,14 +489,24 @@
 
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-          <span class="material-icons md-36 m-2">
-            assessment
-          </span>
-          End of Month/overall Savings
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseThree"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseThree"
+        >
+          <span class="material-icons md-36 m-2"> assessment </span>
+          Total Savings
         </button>
       </h2>
-      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree" data-bs-parent="#accordionpanelsStayOpenExample">
+      <div
+        id="panelsStayOpen-collapseThree"
+        class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingThree"
+        data-bs-parent="#accordionpanelsStayOpenExample"
+      >
         <div class="accordion-body">
           <div class="row">
             <div class="col d-sm-none d-md-block">
@@ -362,38 +535,46 @@
       </div>
     </div>
 
+    {% comment %} All Expenses Breakdown graph & data {% endcomment %}
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingfour">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapsefour" aria-expanded="false" aria-controls="panelsStayOpen-collapsefour">
-          <span class="material-icons md-36 m-2">
-            assessment
-          </span>
-          All expenses graph
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapsefour"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapsefour"
+        >
+          <span class="material-icons md-36 m-2"> assessment </span>
+          All Expenses Breakdown
         </button>
       </h2>
-      <div id="panelsStayOpen-collapsefour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingfour" data-bs-parent="#accordionpanelsStayOpenExample">
+      <div
+        id="panelsStayOpen-collapsefour"
+        class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingfour"
+        data-bs-parent="#accordionpanelsStayOpenExample"
+      >
         <div class="accordion-body">
           <div class="row">
+            <div class="col">{{ graph_pie_overall_expenses_by_type|safe }}</div>
             <div class="col">
-              {{ graph_category_wise_overall_pie|safe }}
-            </div>
-            <div class="col">
-              <table class="table table-striped border border-light">
+              <table class="table table-striped border border-dark">
+                <caption style="display: none">
+                  All Expenses Breakdown Table
+                </caption>
                 <thead>
                   <tr>
-                    <th>Type</th>
+                    <th>Expense Type</th>
                     <th>Expenses</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for x,y in category_wise_overall %}
+                  {% for expenses_type,expenses in overall_expenses_by_type_data %}
                   <tr>
-                    <td>
-                      {{ x }}
-                    </td>
-                    <td>
-                      {{ y }}
-                    </td>
+                    <td>{{ expenses_type }}</td>
+                    <td>{{ expenses }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -403,10 +584,7 @@
         </div>
       </div>
     </div>
-
   </div>
-
-
 </div>
 
 {% endblock body %}

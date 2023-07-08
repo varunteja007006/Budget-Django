@@ -57,13 +57,14 @@ class GraphFunctions:
 
     def get_graph_pie(self,overall_exp, types, graph_title):
         fig = plt.figure()
-        colours = ['#0d6efd', '#6610f2', '#0dcaf0', '#d63384',
-                   '#dc3545', '#fd7e14', '#ffc107', '#33ff66']
-        explode = [0.05, 0.2, 0.05, 0.2, 0.2, 0.2, 0, 0.1]
+        colours = ['#0d6efd', '#fd7e14','#6610f2', '#33ff66', '#74acfc', '#ff8791','#a8fff9',
+                     '#ffc107']
+        explode = [0, 0, 0, 0, 0, 0,0, 0]
         plt.pie(overall_exp, labels=types, explode=explode[:len(types)], colors=colours, wedgeprops={
-                'edgecolor': 'black', }, shadow=True, autopct="%1.1f%%", rotatelabels=True)
+                'edgecolor': 'black', }, autopct="%1.1f%%")
         plt.title(graph_title)
         plt.tight_layout()
+        # plt.legend()
         imgdata = StringIO()
         fig.savefig(imgdata, format='svg')
         imgdata.seek(0)
