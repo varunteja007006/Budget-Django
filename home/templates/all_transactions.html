@@ -38,7 +38,7 @@
           {% else %}
           <!--If there is salary data-->
           {% comment %} {% if obj_income.first.amount %} {% endcomment %}
-          <p class="card-text">Rs.{{salary}}/-</p>
+          <p class="card-text">₹{{salary}}</p>
           <div
             class="alert alert-success d-flex align-items-center"
             role="alert"
@@ -56,13 +56,13 @@
           </div>
           {% comment %} {% else %}
           <!--If there is no salary data-->
-          <p class="card-text">Rs.0/-</p>
+          <p class="card-text">₹.0/-</p>
           {% endif %} {% endcomment %} {% endif %}
         </div>
       </div>
     </div>
 
-    <!--End of Month data-->
+    <!--Month end savings data-->
     <div class="col">
       <div class="card">
         {% if obj_income|length == 0 %}
@@ -72,8 +72,8 @@
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">Month end savings</h5>
-          <p class="card-text">Rs.{{end_of_month}}/-</p>
-          {% comment %} Form for updating the End of Month if it is not updated
+          <p class="card-text">₹{{end_of_month}}</p>
+          {% comment %} Form for updating the Month end savings if it is not updated
           or created {% endcomment %}
           <form method="POST">
             {% csrf_token %} {% if need_to_update == 'False' %}
@@ -84,28 +84,11 @@
                 class="btn btn-default bg-warning"
                 value="add"
               >
-                Add Rs.{{end_of_month}}/-
+                Add ₹{{end_of_month}}
               </button>
             </div>
             {% elif need_to_update == 'update' %}
-            <div
-              class="alert alert-warning d-flex align-items-center"
-              role="alert"
-            >
-              <svg
-                class="bi flex-shrink-0 me-2"
-                width="24"
-                height="24"
-                role="img"
-                aria-label="Warning:"
-              >
-                <use xlink:href="#exclamation-triangle-fill" />
-              </svg>
-              <div>
-                Please update! End of month is not correct in the Database.
-              </div>
-            </div>
-            {% comment %} Trigger update End of Month Modal {% endcomment %}
+            {% comment %} Trigger update Month end savings Modal {% endcomment %}
             <div class="d-grid gap-2 col-6 mx-auto">
               <button
                 type="button"
@@ -128,7 +111,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="updateModalLabel">
-                      Update the End of Month
+                      Update the Month end savings
                     </h5>
                     <button
                       type="button"
@@ -138,9 +121,10 @@
                     ></button>
                   </div>
                   <div class="modal-body">
-                    Last recorded End of Month amount in database is
-                    <b>Rs.{{end_of_month_noted}}</b>
-                    New End of Month amount is Rs.{{end_of_month}}/-
+                    <p>Last recorded Month end saving in database is
+                    <b>₹{{end_of_month_noted}}</b>.</p>
+                    <p>Your new Month end savings is <b>₹{{end_of_month}}</b></p>
+                    <p>Do you confirm to save <b>₹{{end_of_month}}</b>?</p>
                     <div class="invisible">
                       <input
                         type="number"
@@ -167,12 +151,30 @@
                       class="btn btn-default bg-warning"
                       value="update"
                     >
-                      Save End of Month - Rs.{{end_of_month}}/-
+                      Confirm Save
                     </button>
                   </div>
                 </div>
               </div>
             </div>
+          {% comment %} Update button {% endcomment %}
+          <div
+            class="alert alert-warning d-flex align-items-center mt-2 mb-0"
+            role="alert"
+          >
+            <svg
+              class="bi flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Warning:"
+            >
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>
+              Update Month end savings.
+            </div>
+          </div>
             {% else %}
             <div
               class="alert alert-success d-flex align-items-center"
@@ -200,10 +202,10 @@
       <div class="card bg-success text-light">
         <div class="card-header">Savings</div>
         <div class="card-body">
-          <h5 class="card-title">All your Savings</h5>
+          <h5 class="card-title">Your total Savings</h5>
           <p class="card-text">
-            {% if total_eom %} Rs.{{total_eom}}/- {% else %}
-            Rs.{{end_of_month}}/- {% endif %}
+            {% if total_eom %} ₹{{total_eom}}{% else %}
+            ₹{{end_of_month}} {% endif %}
           </p>
           {% if need_to_update == 'update' %}
           <div
@@ -263,8 +265,8 @@
       <div class="card bg-danger text-light">
         <div class="card-header">Expenses</div>
         <div class="card-body">
-          <h5 class="card-title">All the Expenditure</h5>
-          <p class="card-text">Rs.{{total_expenses}}/-</p>
+          <h5 class="card-title">Your total Expenditure</h5>
+          <p class="card-text">₹{{total_expenses}}</p>
           {% if total_expenses > end_of_month %}
           <div
             class="alert alert-danger d-flex align-items-center"
@@ -374,7 +376,7 @@
                   <tr>
                     <td>{{ expenses.name|capfirst }}</td>
                     <td>{{ expenses.type|capfirst }}</td>
-                    <td>{{ expenses.cost|capfirst }}</td>
+                    <td>₹{{ expenses.cost|capfirst }}</td>
                     <td>{{ expenses.date }}</td>
                     <td>{{ expenses.time }}</td>
                     <td>{{ expenses.comment|capfirst }}</td>
@@ -476,7 +478,7 @@
                   {% for expense_type,expenses in monthly_expenses_by_type_data %}
                   <tr>
                     <td>{{ expense_type }}</td>
-                    <td>{{ expenses }}</td>
+                    <td>₹{{ expenses }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -487,6 +489,7 @@
       </div>
     </div>
 
+    {% comment %} Month end savings {% endcomment %}
     <div class="accordion-item border-dark">
       <h2 class="accordion-header" id="panelsStayOpen-headingThree">
         <button
@@ -514,17 +517,18 @@
             </div>
             <div class="col">
               <table class="table table-striped border border-light">
+                <caption></caption>
                 <thead>
                   <tr>
-                    <th>End of month</th>
                     <th>Date</th>
+                    <th>End of month</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for obj in obj_eom_rev %}
                   <tr>
-                    <td>{{obj.end_of_month}}</td>
                     <td>{{obj.date}}</td>
+                    <td>₹{{obj.end_of_month}}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -574,7 +578,7 @@
                   {% for expenses_type,expenses in overall_expenses_by_type_data %}
                   <tr>
                     <td>{{ expenses_type }}</td>
-                    <td>{{ expenses }}</td>
+                    <td>₹{{ expenses }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>

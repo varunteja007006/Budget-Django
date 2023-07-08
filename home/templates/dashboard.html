@@ -95,7 +95,7 @@
                   {% for obj in obj_income %}
                   <div class="font-monospace border border-light border-1 mb-2 bg-success rounded-1 p-2">
                     <p class="p-0 m-0">Credit: {{obj.name}}</p>
-                    <p class="p-0 m-0">Amount Credited: Rs.{{obj.amount}}/-</p>
+                    <p class="p-0 m-0">Amount Credited: ₹{{obj.amount}}</p>
                     <p class="p-0 m-0">Comments: {{obj.comment}}</p>
                     <p class="d-flex flex-row-reverse p-0 m-0"><span class="badge text-bg-light p-2 mx-1 my-0">{{obj.date}}, {{obj.time}}</span></p>
                   </div>
@@ -149,7 +149,7 @@
                 {% for obj in page_obj %}
                 <div class="text-light font-monospace border border-1 border-light bg-danger mb-2 rounded-1 p-2">
                   <p class="m-0 p-0">Expense: {{obj.name}}</p>
-                  <p class="m-0 p-0">Debited Amount: Rs.{{obj.cost}}/-</p>
+                  <p class="m-0 p-0">Debited Amount: ₹{{obj.cost}}</p>
                   <p class="m-0 p-0">Comments: {{obj.comment}}</p>
                   <p class="d-flex flex-row-reverse p-0 m-0"><span class="badge text-bg-light p-2 mx-1 my-0">{{obj.date}}, {{obj.time}}</span></p>
                 </div>

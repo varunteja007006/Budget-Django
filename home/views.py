@@ -126,7 +126,7 @@ def all_transactions(request):
                 return redirect(reverse('home:all-transactions'))
 
         elif 'add' == request.POST.get('submit'):
-            eom_form_obj = models.end_of_month_model(end_of_month=end_of_month)
+            eom_form_obj = End_of_month_model(end_of_month=end_of_month)
             eom_form_obj.save()
             return redirect(reverse('home:all-transactions'))
     

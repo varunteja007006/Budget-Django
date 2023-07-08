@@ -2,7 +2,7 @@
 
 <div class="container p-4">
   <div class="accordion my-2" id="accordionExample">
-    {% comment %} First item {% endcomment %}
+    {% comment %} Add SIP {% endcomment %}
     <div class="accordion-item my-2 bg-dark rounded-5 border-0">
       <h2 class="accordion-header rounded-5">
         <button
@@ -82,12 +82,11 @@
               <form method="POST">
                 {% csrf_token %}
                 <div id="emailHelp" class="form-text">
-                  *Fill the below forms if they are not available to select in
-                  ADD SIP
+                  *Fill the below forms if the SIP Product or Platform not available
                 </div>
                 <div class="mb-3">
                   <label for="id_sip_platformname" class="form-label"
-                    >Platform name</label
+                    >SIP Platform name</label
                   >
                   <input
                     type="text"
@@ -111,7 +110,7 @@
                 {% csrf_token %}
                 <div class="mb-3">
                   <label for="id_sip_productname" class="form-label"
-                    >Product name</label
+                    >SIP Product name</label
                   >
                   <input
                     type="text"
@@ -150,7 +149,7 @@
         </div>
       </div>
     </div>
-    {% comment %} Second item {% endcomment %}
+    {% comment %} SIP Records {% endcomment %}
     <div class="accordion-item my-2 bg-dark rounded-5 border-0">
       <h2 class="accordion-header rounded-5">
         <button
@@ -203,7 +202,7 @@
         </div>
       </div>
     </div>
-    {% comment %} Third item {% endcomment %}
+    {% comment %} SIP Platforms and Products {% endcomment %}
     <div class="accordion-item my-2 bg-dark rounded-5 border-0">
       <h2 class="accordion-header rounded-5">
         <button
