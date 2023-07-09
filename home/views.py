@@ -167,9 +167,7 @@ def all_transactions(request):
     for obj in obj_eom:
         x.append(obj.date.strftime("%b-%Y"))
         y.append(obj.end_of_month)
-    graph_total_eom = gf.get_graph_plot(
-        x, y, '', 'Amount saved', 'Savings graph', 'green')
-    
+    graph_total_eom = gf.get_graph_bar(x, y,'','Month End Savings','Savings graph')
     # contexts
     context = {
         'obj_income': obj_income,
